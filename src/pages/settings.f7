@@ -1,0 +1,66 @@
+<template>
+<div class="page" data-name="settings">
+  <div class="navbar">
+    <div class="navbar-bg"></div>
+    <div class="navbar-inner sliding">
+      <div class="title">Settings</div>
+    </div>
+  </div>
+  <div class="page-content">
+    ${Object.keys(expenses).map((category) => {
+    return $h`
+    <div class="card">
+  <div class="card-header">${category}</div>
+  <div class="card-content flex-direction-column justify-content-center">
+    <!-- Add gauge-init class, and specify parameters in data- attributes -->
+    <div
+      class="gauge gauge-init my-gauge center"
+      data-type="circle"
+      data-value=${expenses[category].reduce((sum,expense) => {
+      return sum - expense.sum
+      },0) / budget[category]}
+      data-value-text="${expenses[category].reduce((sum,expense) => {
+      return sum - expense.sum
+      },0)/(budget[category] ?? 0)}%"
+      data-value-text-color="#ff9800"
+      data-border-color="#ff9800"
+    ></div>
+  </div>
+  <div class="card-footer">Spenderat - ${expenses[category].reduce((sum,expense) => {
+      return sum + expense.sum
+      },0)}kr    Budgeterad - ${budget[category] ?? 0}kr</div>
+</div>`
+    })}
+  </div>
+  <div class="fab fab-right-bottom panel-open" data-panel="right">
+    <a href="#">
+      <i class="icon material-icons if-md">settings</i>
+    </a>
+  </div>
+<!-- Right panel with reveal effect-->
+<div class="panel panel-right panel-reveal">
+  <div class="view">
+    <div class="page">
+      <div class="navbar">
+        <div class="navbar-bg"></div>
+        <div class="navbar-inner">
+          <div class="title">Right Panel</div>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="block">Right panel content goes here</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</template>
+<script>
+  export default (props) => {
+    const expenses = props.expenses;
+    const budget = props.budget;
+    console.table(budget);
+
+    return $render;
+  }
+</script>

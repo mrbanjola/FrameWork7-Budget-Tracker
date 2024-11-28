@@ -1,0 +1,6 @@
+/* Your app custom styles here */
+.my-gauge {
+position: relative;
+left: 50%;
+transform: translateX(-50%);
+}

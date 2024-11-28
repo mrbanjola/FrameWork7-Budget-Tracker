@@ -1,0 +1,78 @@
+<template>
+  <div class="page" data-name="catalog">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="title">Catalog</div>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="searchbar-backdrop"></div>
+      <form class="searchbar">
+        <div class="searchbar-inner">
+          <div class="searchbar-input-wrap">
+            <input type="search" placeholder="Search" />
+            <i class="searchbar-icon"></i>
+            <span class="input-clear-button"></span>
+          </div>
+          <span class="searchbar-disable-button">Cancel</span>
+        </div>
+      </form>
+      ${Object.keys(expenses).map((expense) => {
+      return $h`
+        <div class="card">
+          <div class="card-header item-title">${expense}</div>
+          <div class="card-content">
+            <div class="list list-dividers">
+                <ul>
+                   ${expenses[expense].map(exp => 
+                   $h`<li>
+    <div class="item-content">
+        <div class="item-media">
+            <i class="icon material-icons if-md">${exp.sum < 0 ? "remove" : "add"}</i>
+        </div>
+        <div class="item-inner">
+            <div class="item-title">
+                ${exp.description}
+            </div>
+            <div class="item-after">
+                ${exp.sum}
+            </div>
+        </div>
+    </div>
+</li>`)}
+${$h`<li>
+    <div class="item-content">
+        <div class="item-media">
+            <i class="icon material-icons if-md">equal</i>
+        </div>
+        <div class="item-inner">
+            <div class="item-title">
+                Totalt
+            </div>
+            <div class="item-after">
+                ${expenses[expense].reduce((sum,expense) => {
+                return sum + expense.sum;
+                },0)}
+            </div>
+        </div>
+    </div>
+</li>`}
+                </ul>
+            </div>
+          </div>
+          <div class="card-footer">${expense.date}</div>
+        </div>
+      `
+    }
+    )}
+    </div>
+  </div>
+</template>
+<script>
+  export default (props) => {
+    const expenses = props.expenses;
+
+    return $render;
+  }
+</script>

@@ -1,0 +1,19 @@
+{
+  "cwd": "/home/runner/workspace",
+  "type": [
+    "pwa",
+    "web"
+  ],
+  "name": "BudgetTracker2",
+  "framework": "core",
+  "template": "tabs",
+  "bundler": "vite",
+  "cssPreProcessor": false,
+  "theming": {
+    "customColor": true,
+    "color": "#26263a",
+    "darkMode": false,
+    "iconFonts": true
+  },
+  "customBuild": false
+}
