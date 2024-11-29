@@ -2,7 +2,7 @@ import { createStore } from 'framework7';
 
 const store = createStore({
   state: {
-    expenses: null, // Global variable to store expenses
+    expenses: {}, // Global variable to store expenses
     budget: null, // Global variable to store budget,
     categorizedExpenses: null, // Global variable to store categorized expenses
   },
@@ -12,13 +12,15 @@ const store = createStore({
         return; // If data is already fetched, avoid making another API request
       }
       try {
-        const response = await fetch('/api/expenses'); // Replace with your API endpoint
+        const response = await fetch('/api/expenses?by=category'); // Replace with your API endpoint
         const data = await response.json();
         state.expenses = data; // Save to global state
-        state.categorizedExpenses = categorizeExpenses(data);
       } catch (error) {
         console.error('Failed to fetch expenses:', error);
       }
+    },
+    setExpenses({ state }, expenses) {
+      state.expenses = expenses;
     },
     async fetchBudget({ state }) {
       if (state.budget) {
@@ -33,6 +35,14 @@ const store = createStore({
       }
     }
   },
+  setBudgetData({ state }, budget) {
+    state.budget = budget;
+  },
+  getters: {
+    expenses({ state }) {
+      return state.expenses;
+    },
+  }
 });
 
 function categorizeExpenses(expenses) {

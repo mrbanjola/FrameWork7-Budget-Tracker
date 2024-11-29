@@ -18,6 +18,7 @@
           <span class="searchbar-disable-button">Cancel</span>
         </div>
       </form>
+      <div v-if="expenses">
       ${Object.keys(expenses).map((expense) => {
       return $h`
         <div class="card">
@@ -25,11 +26,11 @@
           <div class="card-content">
             <div class="list list-dividers">
                 <ul>
-                   ${expenses[expense].map(exp => 
+                   ${expenses[expense]?.map(exp => 
                    $h`<li>
     <div class="item-content">
         <div class="item-media">
-            <i class="icon material-icons if-md">${exp.sum < 0 ? "remove" : "add"}</i>
+            <i class="icon material-icons if-md icon-${exp.sum < 0 ? "red" : "green"}">${exp.sum < 0 ? "remove" : "add"}</i>
         </div>
         <div class="item-inner">
             <div class="item-title">
@@ -51,7 +52,7 @@ ${$h`<li>
                 Totalt
             </div>
             <div class="item-after">
-                ${expenses[expense].reduce((sum,expense) => {
+                ${expenses[expense]?.reduce((sum,expense) => {
                 return sum + expense.sum;
                 },0)}
             </div>
@@ -67,11 +68,14 @@ ${$h`<li>
     }
     )}
     </div>
+    </div>
   </div>
 </template>
 <script>
-  export default (props) => {
+  export default (props,{$store,$,$on}) => {
     const expenses = props.expenses;
+    
+ 
 
     return $render;
   }

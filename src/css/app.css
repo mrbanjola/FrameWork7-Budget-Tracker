@@ -4,3 +4,15 @@ position: relative;
 left: 50%;
 transform: translateX(-50%);
 }
+
+.edit-budget {
+margin-bottom: 12px !important;
+}
+
+.icon-red {
+	color: red;
+}
+
+.icon-green {
+	color: green;
+}

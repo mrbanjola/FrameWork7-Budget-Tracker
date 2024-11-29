@@ -18,17 +18,22 @@
       data-type="circle"
       data-value=${expenses[category].reduce((sum,expense) => {
       return sum - expense.sum
-      },0) / budget[category]}
-      data-value-text="${expenses[category].reduce((sum,expense) => {
+      },0)/budget[category]}
+      data-value-text="${Math.ceil(expenses[category].reduce((sum,expense) => {
+      return sum + Math.abs(expense.sum)
+      },0))}kr"
+      data-value-text-color="${expenses[category].reduce((sum,expense) => {
       return sum - expense.sum
-      },0)/(budget[category] ?? 0)}%"
-      data-value-text-color="#ff9800"
-      data-border-color="#ff9800"
+      },0) / budget[category] < 0.5 ? "#4caf50" : "#ff9800"}"
+      data-border-color="${expenses[category].reduce((sum,expense) => {
+      return sum - expense.sum
+      },0) / budget[category] < 0.5 ? "#4caf50" : "#ff9800"}"
+      data-label-text="av ${budget[category]}kr"
     ></div>
   </div>
   <div class="card-footer">Spenderat - ${expenses[category].reduce((sum,expense) => {
-      return sum + expense.sum
-      },0)}kr    Budgeterad - ${budget[category] ?? 0}kr</div>
+      return sum - expense.sum
+      },0)}kr    Budgeterat - ${budget[category] ?? 0}kr</div>
 </div>`
     })}
   </div>
@@ -48,7 +53,29 @@
         </div>
       </div>
       <div class="page-content">
-        <div class="block">Right panel content goes here</div>
+        <div class="block">
+        <form class="list list-strong-ios list-dividers-ios list-outline-ios" id="my-form">
+          <ul>
+          ${Object.keys(budget).map((category) => {
+          return $h`
+           <li>
+             <div class="item-content item-input">
+               <div class="item-inner">
+                 <div class="item-title item-label">${category}</div>
+                 <div class="item-input-wrap">
+                   <input type="number" name="${category}" value="${budget[category]}" placeholder="${budget[category]}kr" />
+                 </div>
+               </div>
+             </div>
+           </li>
+           `
+          })}
+          </ul>
+        </form>
+        <div class="block block-strong grid grid-cols-1 grid-gap">
+          <a id="savebudget" class="button button-fill convert-form-to-data" href="#">Spara</a>
+        </div>
+        </div>
       </div>
     </div>
   </div>
@@ -56,10 +83,30 @@
 </div>
 </template>
 <script>
-  export default (props) => {
+  export default (props, {$,$on,$f7,$store}) => {
+
     const expenses = props.expenses;
     const budget = props.budget;
-    console.table(budget);
+
+
+    $on("pageInit",() => {
+    document.querySelector("#savebudget").addEventListener("click",(e) => {
+    e.preventDefault();
+    var formData = $f7.form.convertToData('#my-form');
+    fetch("/api/post/budget",
+{
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    method: "POST",
+    body: JSON.stringify(formData)
+})
+.then(function(res){ console.log(res) })
+.catch(function(res){ console.log(res) })
+    });
+    })
+    
 
     return $render;
   }
