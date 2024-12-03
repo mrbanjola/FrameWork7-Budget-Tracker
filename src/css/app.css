@@ -10,9 +10,35 @@ margin-bottom: 12px !important;
 }
 
 .icon-red {
-	color: red;
+	color: #DC143C;
 }
 
 .icon-green {
-	color: green;
+	color: #50C878;
+}
+
+.text-red {
+	color: #DC143C !important;
+}
+
+.text-green {
+	color: #50C878 !important;
+}
+
+.cover-image {
+	width: 100%;
+	
+}
+
+.cover-image-container {
+	background: rgb(138,203,236);
+background: linear-gradient(0deg, rgba(138,203,236,1) 33%, rgba(73,144,172,1) 36%);
+
+	margin-top: 0px;
+}
+
+.login-screen-content {
+	align-content: center;
+	background-image: url('../images/login-background.png');
+	background-size: contain;
 }

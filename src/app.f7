@@ -1,25 +1,6 @@
-
 <template>
   <div id="app">
-
-    <!-- Left panel with cover effect-->
-    <div class="panel panel-left panel-cover panel-init">
-      <div class="view">
-        <div class="page">
-          <div class="navbar">
-            <div class="navbar-bg"></div>
-            <div class="navbar-inner">
-              <div class="title">Left Panel</div>
-            </div>
-          </div>
-          <div class="page-content">
-            <div class="block">Left panel content goes here</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
+    ${activeUser.value? $h`
     <!-- Views/Tabs container -->
     <div class="views tabs safe-areas">
       <!-- Tabbar for switching views-tabs -->
@@ -27,12 +8,16 @@
         <div class="toolbar-inner">
           <a href="#view-home" class="tab-link tab-link-active">
             <i class="icon material-icons if-md">home</i>
-            <span class="tabbar-label">Home</span>
+            <span class="tabbar-label">Hem</span>
           </a>
           <a href="#view-catalog" class="tab-link">
             <i class="icon f7-icons if-not-md">square_list_fill</i>
             <i class="icon material-icons if-md">view_list</i>
-            <span class="tabbar-label">Catalog</span>
+            <span class="tabbar-label">Översikt</span>
+          </a>
+          <a href="#view-stats" class="tab-link">
+            <i class="icon material-icons if-md">lock</i>
+            <span class="tabbar-label">Statistik</span>
           </a>
           <a href="#view-settings" class="tab-link">
             <i class="icon f7-icons if-not-md">gear</i>
@@ -56,7 +41,14 @@
       <div id="view-settings" class="view view-init tab" data-name="settings" data-url="/settings/">
         <!-- Settings page will be loaded here dynamically from /settings/ route -->
       </div>
+
+      <!-- Stats View -->
+      <div id="view-stats" class="view view-init tab" data-name="stats" data-url="/stats/">
+        <!-- Stats page will be loaded here dynamically from /stats/ route -->
+      </div>
+
     </div>
+
 
 
     <!-- Popup -->
@@ -74,63 +66,150 @@
           </div>
           <div class="page-content">
             <div class="block">
-              <p>Popup content goes here.</p>
+              <form class="list list-strong-ios list-dividers-ios list-outline-ios" id="my-form">
+                <ul>
+                  <li>
+                    <div class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title item-label">Namn</div>
+                        <div class="item-input-wrap">
+                          <input type="text" name="name" placeholder="Vad heter du?" />
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title item-label">Länk till kalkylark</div>
+                        <div class="item-input-wrap">
+                          <input type="text" name="name" placeholder="URL för inläsning av transaktioner." />
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title item-label">Löneperiod</div>
+                        <div class="item-input-wrap">
+                          <select name="gender">
+                            <option value="2023-11">December 2023</option>
+                            <option value="2024-0">Januari 2024</option>
+                            <option value="2024-1">Februari 2024</option>
+                            <option value="2024-2">Mars 2024</option>
+                            <option value="2024-3">April 2024</option>
+                            <option value="2024-4">Maj 2024</option>
+                            <option value="2024-5">Juni 2024</option>
+                            <option value="2024-6">Juli 2024</option>
+                            <option value="2024-7">Augusti 2024</option>
+                            <option value="2024-8">September 2024</option>
+                            <option value="2024-9">Oktober 2024</option>
+                            <option value="2024-10" selected>November 2024</option>
+                            <option value="2024-11">December 2024</option>
+                            <option value="2025-0">Januari 2025</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title item-label">Filter för transaktioner</div>
+                        <div class="item-input-wrap">
+                          <select name="gender">
+                            <option value="all" selected="selected">Alla</option>
+                            <option value="no-fixed">Ej fasta kostnader</option>
+                            <option value="no-savings">Ej sparande</option>
+                            <option value="variable-only">Endast rörliga kostnader</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title">Någon sorts knapp</div>
+                        <div class="item-after">
+                          <label class="toggle toggle-init">
+                            <input type="checkbox" name="toggle" value="yes" /><i class="toggle-icon"></i>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </form>
+              <div class="block block-strong grid grid-cols-1 grid-gap">
+                <a class="button button-fill" href="#">Spara inställningar</a>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
+    ` : $h`
+    <!-- Login View -->
     <!-- Login Screen -->
-    <div class="login-screen" id="my-login-screen">
-      <div class="view">
-        <div class="page">
-          <div class="page-content login-screen-content">
-            <div class="login-screen-title">Login</div>
-            <div class="list">
-              <ul>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Username</div>
-                    <div class="item-input-wrap">
-                      <input type="text" name="username" placeholder="Your username" value="${username}" @input="${updateUsername}"/>
+    <div class="page-content login-screen-content">
+      <div class="login-screen-title">Login</div>
+      <div class="list">
+        <ul>
+          <li class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">Username</div>
+              <div class="item-input-wrap">
+                <input required type="text" name="username" placeholder="Your username" value="${username}" @input="${updateUsername}"/>
 
-                    </div>
-                  </div>
-                </li>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Password</div>
-                    <div class="item-input-wrap">
-                      <input type="password" name="password" placeholder="Your password" value="${password}" @input="${updatePassword}"/>
-
-                    </div>
-                  </div>
-                </li>
-              </ul>
+              </div>
             </div>
-            <div class="list">
-              <ul>
-                <li>
-                  <a href="#" class="item-link list-button login-button" @click="${alertLoginData}">Sign In</a>
+          </li>
+          <li class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">Password</div>
+              <div class="item-input-wrap">
+                <input required type="password" name="password" placeholder="Your password" value="${password}" @input="${updatePassword}"/>
 
-                </li>
-              </ul>
-              <div class="block-footer">Some text about login information.<br/>Click "Sign In" to close Login Screen</div>
+              </div>
             </div>
-          </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list">
+        <ul>
+        <li class="item-content">
+      <div class="item-inner">
+        <div class="item-title">Kom ihåg mig</div>
+        <div class="item-after">
+          <label class="toggle">
+            <input type="checkbox" id="rememberme" />
+            <span class="toggle-icon"></span>
+          </label>
         </div>
       </div>
-    </div>
+    </li>
+          <li>
+            <a href="#" class="item-link list-button login-button" @click="${handleLogin}">Sign In</a>
 
+          </li>
+
+        </ul>
+        <div class="block-footer">Some text about login information.<br/>Click "Sign In" to close Login Screen</div>
+      </div>
+    </div>
+    `}
   </div>
 </template>
 <script>
-  export default (props, { $f7, $update }) => {
+  export default (props, { $f7, $update, $store, $ }) => {
+
+  var activeUser = $store.getters.getActiveUser;
+
     // Login screen demo data
     let username = '';
     let password = '';
-
     const updateUsername = (e) => {
       username = e.target.value;
       $update();
@@ -139,11 +218,40 @@
       password = e.target.value;
       $update();
     }
-    const alertLoginData = () => {
-      $f7.dialog.alert('Username: ' + username + '<br/>Password: ' + password, () => {
-        $f7.loginScreen.close();
-      });
+    const handleLogin = () => {
+    if (password == "" || username == "") {
+      return;
     }
+    
+     $f7.preloader.show();
+      var rememberMe = document.querySelector("#rememberme").checked;
+      console.log(rememberMe);
+      $store.dispatch("login",{
+      username,
+      password
+      }).then((loginResult) => {
+        console.log("I am inside the so called .then. Look at this result");
+        console.log(loginResult);
+        if (loginResult.success) {
+          if (rememberMe) {
+            setCookie("userId", loginResult.userData.userId, 30);
+          }
+          $f7.preloader.hide();
+          $store.dispatch("setActiveUser",loginResult.userData);
+        }
+
+        $update();
+      })
+
+
+    }
+
+    const setCookie = (cname, cvalue, exdays) => {
+      const d = new Date();
+      d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+      let expires = "expires="+d.toUTCString();
+      document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    };
 
     return $render;
   }

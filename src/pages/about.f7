@@ -1,5 +1,5 @@
 <template>
-<div class="page" data-name="about">
+<div class="page" data-name="timeline">
   <div class="navbar">
     <div class="navbar-bg"></div>
     <div class="navbar-inner sliding">
@@ -9,27 +9,107 @@
           <span class="if-not-md">Back</span>
         </a>
       </div>
-      <div class="title">About</div>
+      <div class="title">Tidslinje</div>
     </div>
   </div>
   <div class="page-content">
-    <div class="block-title">About My App</div>
-    <div class="block">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magni molestiae laudantium dignissimos est nobis
-        delectus nemo ea alias voluptatum architecto, amet similique, saepe iste consectetur in repellat ut minus
-        quibusdam!</p>
-      <p>Molestias et distinctio porro nesciunt ratione similique, magni doloribus, rerum nobis, aliquam quae reiciendis
-        quasi modi. Nam a recusandae, fugiat in ea voluptates fuga eius, velit corrupti reprehenderit dignissimos
-        consequatur!</p>
-      <p>Blanditiis, cumque quo adipisci. Molestiae, dolores dolorum quos doloremque ipsa ullam eligendi commodi
-        deserunt doloribus inventore magni? Ea mollitia veniam nostrum nihil, iusto doloribus a at! Ea molestiae ullam
-        delectus!</p>
+  <div class="searchbar-backdrop"></div>
+  <form data-search-container=".timeline" data-search-in=".item-title" class="searchbar searchbar-init">
+    <div class="searchbar-inner">
+      <div class="searchbar-input-wrap">
+        <input type="search" placeholder="Sök" />
+        <i class="searchbar-icon"></i>
+        <span class="input-clear-button"></span>
+      </div>
+      <span class="searchbar-disable-button">Cancel</span>
+    </div>
+  </form>
+    <div class="block-title">Default</div>
+    <div class="timeline">
+    ${expenses.value.reverse().map((expense) => {
+    let result =  $h`
+    <div class="timeline-item">
+      <div class="timeline-item-date">${prevDate != expense.date? getFormattedDate(expense.date) : ""}</div>
+      <div class="timeline-item-divider"></div>
+      <div class="timeline-item-content">
+        <div class="timeline-item-inner">
+        <div class="list list-dividers">
+        <ul>
+          <li>
+              <div class="item-content">
+                  <div class="item-media">
+                     <i class="icon material-icons if-md">${categoryIcons[expense.category] ?? "house"}</i>
+                  </div>
+                  <div class="item-inner">
+                      <div class="item-title">
+                          ${expense.description}
+                      </div>
+                      <div class="item-after text-${expense.sum < 0? "red" : "green"}">
+                          ${expense.sum}kr
+                      </div>
+                  </div>
+              </div>
+          </li>
+          </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    `;
+    prevDate = expense.date;
+    return result;
+    })
+    }
+      
     </div>
   </div>
 </div>
 </template>
 <script>
-export default () => {
+ export default async (props, { $, $on, $f7, $store, $update}) => {
+
+  await $store.dispatch("fetchExpenses");
+  var expenses = $store.getters.getAllExpenses;
+  var prevDate;
+
+  const getFormattedDate = (date) => {
+    date = new Date(date);
+    let dateNumber = date.getDate();
+    let months = ["Jan.", "Feb.", "Mar.", "Apr.", "Maj.", "Jun.", "Jul.", "Aug.", "Sep.", "Okt.", "Nov.", "Dec."];
+    let month = months[date.getMonth()];
+    return `${dateNumber} ${month}`
+  }
+
+  const categoryIcons = {
+    "SL biljett": "train",
+    "Xtraspar": "star",
+    "Restaurang": "restaurant",
+    "Livsmedel": "local_grocery_store",
+    "Småköp": "shopping_bag",
+    "Bil": "directions_car",
+    "Lön": "account_balance_wallet",
+    "Swish": "swap_horiz",
+    "Prenumerationer": "subscriptions",
+    "Bar": "local_bar",
+    "Insättning Sparande": "savings",
+    "Bostad": "home",
+    "Telefon": "phone_android",
+    "Lån": "attach_money",
+    "Träning & Hälsa": "fitness_center",
+    "Övrigt": "category",
+    "CSN": "school",
+    "Försäkring": "verified_user",
+    "Nöje & underhållning": "movie",
+    "Bankavgifter": "account_balance",
+    "Second hand": "storefront",
+    "Uttag Sparande": "money_off",
+    "Resa": "flight",
+    "Taxi & transport": "local_taxi",
+    "Tågresa": "commute",
+    "Utlägg": "receipt_long",
+    "Kläder": "checkroom"
+  };
+  
   return $render;
 };
 </script>

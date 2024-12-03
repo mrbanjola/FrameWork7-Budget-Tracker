@@ -13,229 +13,807 @@
     </div>
   </div>
   <div class="page-content">
-    <div class="block-title">Form Example</div>
-    <div class="list list-strong-ios list-dividers-ios list-outline-ios">
-      <ul>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">Name</div>
-              <div class="item-input-wrap">
-                <input type="text" placeholder="Your name" />
+    <div class="list contacts-list list-strong-ios list-dividers-ios">
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">A</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Aaron</div>
               </div>
             </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">E-mail</div>
-              <div class="item-input-wrap">
-                <input type="email" placeholder="E-mail" />
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Adam</div>
               </div>
             </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">URL</div>
-              <div class="item-input-wrap">
-                <input type="url" placeholder="URL" />
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Aiden</div>
               </div>
             </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">Password</div>
-              <div class="item-input-wrap">
-                <input type="password" placeholder="Password" />
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Albert</div>
               </div>
             </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">Phone</div>
-              <div class="item-input-wrap">
-                <input type="tel" placeholder="Phone" />
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Alex</div>
               </div>
             </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">Gender</div>
-              <div class="item-input-wrap">
-                <select>
-                  <option>Male</option>
-                  <option>Female</option>
-                </select>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Alexander</div>
               </div>
             </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">Birth date</div>
-              <div class="item-input-wrap">
-                <input type="date" placeholder="Birth day" value="2014-04-30" />
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Alfie</div>
               </div>
             </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Toggle</div>
-              <div class="item-after">
-                <label class="toggle toggle-init">
-                  <input type="checkbox" />
-                  <span class="toggle-icon"></span>
-                </label>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Archie</div>
               </div>
             </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">Slider</div>
-              <div class="item-input-wrap">
-                <div class="range-slider range-slider-init" data-label="true">
-                  <input type="range" value="50" min="0" max="100" step="1" />
-                </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Arthur</div>
               </div>
             </div>
-          </div>
-        </li>
-        <li class="align-top">
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">Textarea</div>
-              <div class="item-input-wrap">
-                <textarea placeholder="Bio"></textarea>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Austin</div>
               </div>
             </div>
-          </div>
-        </li>
-        <li class="align-top">
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">Resizable</div>
-              <div class="item-input-wrap">
-                <textarea placeholder="Bio" class="resizable"></textarea>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">B</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Benjamin</div>
               </div>
             </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div class="block-title">Buttons</div>
-    <div class="block block-strong-ios block-outline-ios grid grid-cols-2 grid-gap">
-      <a href="#" class="button">Button</a>
-      <a href="#" class="button button-fill">Fill</a>
-      <a href="#" class="button button-raised">Raised</a>
-      <a href="#" class="button button-raised button-fill">Raised Fill</a>
-      <a href="#" class="button button-round">Round</a>
-      <a href="#" class="button button-round button-fill">Round Fill</a>
-      <a href="#" class="button button-outline">Outline</a>
-      <a href="#" class="button button-round button-outline">Outline Round</a>
-      <a href="#" class="button button-small button-outline">Small</a>
-      <a href="#" class="button button-small button-round button-outline">Small Round</a>
-      <a href="#" class="button button-small button-fill">Small</a>
-      <a href="#" class="button button-small button-round button-fill">Small Round</a>
-      <a href="#" class="button button-large button-raised">Large</a>
-      <a href="#" class="button button-large button-fill button-raised">Large Fill</a>
-      <a href="#" class="button button-large button-fill button-raised color-red">Large Red</a>
-      <a href="#" class="button button-large button-fill button-raised color-green">Large Green</a>
-    </div>
-    <div class="block-title">Checkbox group</div>
-    <div class="list list-strong-ios list-outline-ios list-dividers-ios">
-      <ul>
-        <li>
-          <label class="item-checkbox item-content">
-            <input type="checkbox" name="checkbox" value="Books" checked="checked" />
-            <i class="icon icon-checkbox"></i>
-            <div class="item-inner">
-              <div class="item-title">Books</div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Blake</div>
+              </div>
             </div>
-          </label>
-        </li>
-        <li>
-          <label class="item-checkbox item-content">
-            <input type="checkbox" name="checkbox" value="Movies" />
-            <i class="icon icon-checkbox"></i>
-            <div class="item-inner">
-              <div class="item-title">Movies</div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Bobby</div>
+              </div>
             </div>
-          </label>
-        </li>
-        <li>
-          <label class="item-checkbox item-content">
-            <input type="checkbox" name="checkbox" value="Food" />
-            <i class="icon icon-checkbox"></i>
-            <div class="item-inner">
-              <div class="item-title">Food</div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">C</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Caleb</div>
+              </div>
             </div>
-          </label>
-        </li>
-        <li>
-          <label class="item-checkbox item-content">
-            <input type="checkbox" name="checkbox" value="Drinks" />
-            <i class="icon icon-checkbox"></i>
-            <div class="item-inner">
-              <div class="item-title">Drinks</div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Callum</div>
+              </div>
             </div>
-          </label>
-        </li>
-      </ul>
-    </div>
-    <div class="block-title">Radio buttons group</div>
-    <div class="list list-strong-ios list-outline-ios list-dividers-ios">
-      <ul>
-        <li>
-          <label class="item-radio item-content">
-            <input type="radio" name="radio" value="Books" checked="checked" />
-            <i class="icon icon-radio"></i>
-            <div class="item-inner">
-              <div class="item-title">Books</div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Cameron</div>
+              </div>
             </div>
-          </label>
-        </li>
-        <li>
-          <label class="item-radio item-content">
-            <input type="radio" name="radio" value="Movies" />
-            <i class="icon icon-radio"></i>
-            <div class="item-inner">
-              <div class="item-title">Movies</div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Charles</div>
+              </div>
             </div>
-          </label>
-        </li>
-        <li>
-          <label class="item-radio item-content">
-            <input type="radio" name="radio" value="Food" />
-            <i class="icon icon-radio"></i>
-            <div class="item-inner">
-              <div class="item-title">Food</div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Charlie</div>
+              </div>
             </div>
-          </label>
-        </li>
-        <li>
-          <label class="item-radio item-content">
-            <input type="radio" name="radio" value="Drinks" />
-            <i class="icon icon-radio"></i>
-            <div class="item-inner">
-              <div class="item-title">Drinks</div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Connor</div>
+              </div>
             </div>
-          </label>
-        </li>
-      </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">D</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Daniel</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">David</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Dexter</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Dylan</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">E</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Edward</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Elijah</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Elliot</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Elliott</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Ethan</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Evan</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">F</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Felix</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Finlay</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Finley</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Frankie</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Freddie</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Frederick</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">G</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Gabriel</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">George</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">H</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Harley</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Harrison</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Harry</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Harvey</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Henry</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Hugo</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">I</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Ibrahim</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Isaac</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">J</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Jack</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Jacob</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Jake</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">James</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Jamie</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Jayden</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Jenson</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Joseph</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Joshua</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Jude</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">K</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Kai</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Kian</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">L</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Leo</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Leon</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Lewis</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Liam</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Logan</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Louie</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Louis</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Luca</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Lucas</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Luke</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">M</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Mason</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Matthew</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Max</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Michael</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Mohammad</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Mohammed</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Muhammad</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">N</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Nathan</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Noah</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">O</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Oliver</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Ollie</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Oscar</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Owen</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">R</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Reuben</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Riley</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Robert</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Ronnie</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Rory</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Ryan</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">S</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Samuel</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Sebastian</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Seth</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Sonny</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Stanley</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">T</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Teddy</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Theo</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Theodore</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Thomas</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Toby</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Tommy</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Tyler</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">W</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">William</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="list-group">
+        <ul>
+          <li class="list-group-title">Z</li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Zachary</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>

@@ -17,21 +17,38 @@ import store from './store.js';
 // Import main app component
 import App from '../app.f7';
 
+import { getCookieValue } from "../Utils/CookieHelpers.js";
+
 
 var app = new Framework7({
   name: 'BudgetTracker2', // App name
   theme: 'auto', // Automatic theme detection
   colors: {
-    primary: '#2196f3',
+    primary: '#4392B2',
   },
+  darkMode: false,
 
   el: '#app', // App root element
   component: App, // App main component
   // App store
+  on: {
+    init: (e,page) => {
+      console.log("App init");
+      let userCookie = getCookieValue("userId");
+      console.log(userCookie);
+      if(userCookie != "") {
+        console.log("Hello, there is userCookie")
+        store.dispatch("fetchUserById",userCookie).then(userData => {
+          console.log(userData);
+          store.dispatch("setActiveUser",userData);
+          
+        })
+      }
+    }
+  },
   store: store,
   // App routes
   routes: routes,
-
   // Register service worker (only on production build)
   serviceWorker: process.env.NODE_ENV ==='production' ? {
     path: '/service-worker.js',

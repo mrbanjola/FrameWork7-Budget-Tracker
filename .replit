@@ -8,6 +8,10 @@ requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
 [nix]
 channel = "stable-24_05"
 
+# Custom configuration to apply HTML syntax highlighting for .f7 files
+[editor]
+defaultLanguage = "html"
+
 [unitTest]
 language = "nodejs"
 
@@ -23,3 +27,15 @@ externalPort = 3000
 [[ports]]
 localPort = 5173
 externalPort = 80
+
+[[ports]]
+localPort = 5174
+externalPort = 3001
+
+[[ports]]
+localPort = 5175
+externalPort = 3002
+
+[[ports]]
+localPort = 5176
+externalPort = 3003

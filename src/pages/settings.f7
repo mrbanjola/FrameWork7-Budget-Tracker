@@ -7,33 +7,35 @@
     </div>
   </div>
   <div class="page-content">
-    ${Object.keys(expenses).map((category) => {
+  <BlockTitle>Rörliga kostnader</BlockTitle>
+    ${Object.keys(categorizedExpenses.value).map((category) => {
+    if (!budget.value[category]) {return "";}
     return $h`
     <div class="card">
   <div class="card-header">${category}</div>
   <div class="card-content flex-direction-column justify-content-center">
     <!-- Add gauge-init class, and specify parameters in data- attributes -->
     <div
-      class="gauge gauge-init my-gauge center"
+      class="gauge gauge-init my-gauge" budget-item="${category}"
       data-type="circle"
-      data-value=${expenses[category].reduce((sum,expense) => {
+      data-value=${categorizedExpenses.value[category].reduce((sum,expense) => {
       return sum - expense.sum
-      },0)/budget[category]}
-      data-value-text="${Math.ceil(expenses[category].reduce((sum,expense) => {
+      },0)/budget.value[category]}
+      data-value-text="${Math.ceil(categorizedExpenses.value[category].reduce((sum,expense) => {
       return sum + Math.abs(expense.sum)
       },0))}kr"
-      data-value-text-color="${expenses[category].reduce((sum,expense) => {
+      data-value-text-color="${getGaugeColor(categorizedExpenses.value[category].reduce((sum,expense) => {
       return sum - expense.sum
-      },0) / budget[category] < 0.5 ? "#4caf50" : "#ff9800"}"
-      data-border-color="${expenses[category].reduce((sum,expense) => {
+      },0) / budget.value[category])}"
+      data-border-color="${getGaugeColor(categorizedExpenses.value[category].reduce((sum,expense) => {
       return sum - expense.sum
-      },0) / budget[category] < 0.5 ? "#4caf50" : "#ff9800"}"
-      data-label-text="av ${budget[category]}kr"
+      },0) / budget.value[category])}"
+      data-label-text="av ${budget.value[category]}kr"
     ></div>
   </div>
-  <div class="card-footer">Spenderat - ${expenses[category].reduce((sum,expense) => {
+  <div class="card-footer">Spenderat - ${categorizedExpenses.value[category].reduce((sum,expense) => {
       return sum - expense.sum
-      },0)}kr    Budgeterat - ${budget[category] ?? 0}kr</div>
+      },0)}kr    Budgeterat - ${budget.value[category] ?? 0}kr</div>
 </div>`
     })}
   </div>
@@ -49,21 +51,21 @@
       <div class="navbar">
         <div class="navbar-bg"></div>
         <div class="navbar-inner">
-          <div class="title">Right Panel</div>
+          <div class="title">Inställningar</div>
         </div>
       </div>
       <div class="page-content">
         <div class="block">
         <form class="list list-strong-ios list-dividers-ios list-outline-ios" id="my-form">
           <ul>
-          ${Object.keys(budget).map((category) => {
+          ${Object.keys(budget.value).map((category) => {
           return $h`
            <li>
              <div class="item-content item-input">
                <div class="item-inner">
                  <div class="item-title item-label">${category}</div>
                  <div class="item-input-wrap">
-                   <input type="number" name="${category}" value="${budget[category]}" placeholder="${budget[category]}kr" />
+                   <input type="number" name="${category}" value="${budget.value[category]}" placeholder="${budget.value[category]}kr" />
                  </div>
                </div>
              </div>
@@ -83,31 +85,107 @@
 </div>
 </template>
 <script>
-  export default (props, {$,$on,$f7,$store}) => {
+  export default async (props, { $, $on, $f7, $store, $update}) => {
+    // Fetch initial data
+    await $store.dispatch("fetchExpenses");
+    await $store.dispatch("fetchBudget");
+    const expenses = $store.getters.getExpenses;
+    const categorizedExpenses = $store.getters.getCategorizedExpenses;
+    const budget = $store.getters.getBudget;
 
-    const expenses = props.expenses;
-    const budget = props.budget;
+    // Lifecycle hook to attach events
+    $on("pageInit", () => {
+      const saveButton = document.querySelector("#savebudget");
+      const form = document.querySelector("#my-form");
+      var gaugesObject = {};
 
 
-    $on("pageInit",() => {
-    document.querySelector("#savebudget").addEventListener("click",(e) => {
-    e.preventDefault();
-    var formData = $f7.form.convertToData('#my-form');
-    fetch("/api/post/budget",
-{
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    method: "POST",
-    body: JSON.stringify(formData)
-})
-.then(function(res){ console.log(res) })
-.catch(function(res){ console.log(res) })
+      if (saveButton && form) {
+        saveButton.addEventListener("click", async (e) => {
+          e.preventDefault();
+
+          gaugesObject = {};
+          
+          for (var gauge of document.querySelectorAll(".gauge")) {
+          gaugesObject[gauge.attributes["budget-item"].value] = gauge;
+          };
+
+          // Get form data
+          const formData = $f7.form.convertToData(form);
+
+          // Dispatch to store
+          await $store.dispatch("setBudget", {
+            budget: formData,
+          });
+
+          for (var category of Object.keys(formData)) {
+          
+          if (!gaugesObject[category]) continue;
+          console.log(`Setting gauge for ${category}`)
+          console.log(gaugesObject[category])
+            gaugesObject[category].f7Gauge.update({
+              value: categorizedExpenses.value[category].reduce((sum,expense) => {
+      return sum - expense.sum
+      },0)/budget.value[category],
+              labelText: `av ${budget.value[category]}kr`,
+              borderColor: getGaugeColor(categorizedExpenses.value[category].reduce((sum,expense) => {
+      return sum - expense.sum
+      },0) / budget.value[category]),
+            valueTextColor: getGaugeColor(categorizedExpenses.value[category].reduce((sum,expense) => {
+      return sum - expense.sum
+      },0) / budget.value[category])
+            });
+            }
+
+          // Send data to the server
+          fetch("/api/post/budget", {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            method: "POST",
+            body: JSON.stringify(formData),
+          })
+            .then((res) => {
+            showNotificationFull();
+            console.log(res)
+            })
+            .catch((err) => console.error(err));
+            $update();
+        });
+      }
     });
-    })
+
+    const getGaugeColor = (value) =>  {
+      if (value <= 0.5) {
+      return "green"
+      } else if (0.5 < value && value < 1){
+        return "#ff9800";
+      } else {
+      return "red";
+      }
+    }
+
+    let notificationFull;
+    const showNotificationFull = () => {
+      // Create notification
+      if (!notificationFull) {
+        notificationFull = $f7.notification.create({
+          icon: '<i class="icon material-icons icon-green if-md">check_circle</i>',
+          title: 'Budget Tracker',
+          titleRightText: 'now',
+          subtitle: 'Succé!',
+          text: 'Budgeten är sparad',
+          closeTimeout: 3000,
+        });
+      }
+      // Open it
+      notificationFull.open();
+    };
+
     
 
     return $render;
-  }
+  };
 </script>
+

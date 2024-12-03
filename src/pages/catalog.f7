@@ -3,7 +3,7 @@
     <div class="navbar">
       <div class="navbar-bg"></div>
       <div class="navbar-inner sliding">
-        <div class="title">Catalog</div>
+        <div class="title">Sammanfattning</div>
       </div>
     </div>
     <div class="page-content">
@@ -11,71 +11,197 @@
       <form class="searchbar">
         <div class="searchbar-inner">
           <div class="searchbar-input-wrap">
-            <input type="search" placeholder="Search" />
+            <input type="search" placeholder="${expenses.value.length}" />
             <i class="searchbar-icon"></i>
             <span class="input-clear-button"></span>
           </div>
           <span class="searchbar-disable-button">Cancel</span>
         </div>
       </form>
-      <div v-if="expenses">
-      ${Object.keys(expenses).map((expense) => {
+      ${Object.keys(groupedExpenses.value).map((expense) => {
+      if (!activeUser.value) {
+      return "";
+      }
       return $h`
-        <div class="card">
-          <div class="card-header item-title">${expense}</div>
-          <div class="card-content">
-            <div class="list list-dividers">
-                <ul>
-                   ${expenses[expense]?.map(exp => 
-                   $h`<li>
-    <div class="item-content">
-        <div class="item-media">
-            <i class="icon material-icons if-md icon-${exp.sum < 0 ? "red" : "green"}">${exp.sum < 0 ? "remove" : "add"}</i>
-        </div>
-        <div class="item-inner">
-            <div class="item-title">
-                ${exp.description}
-            </div>
-            <div class="item-after">
-                ${exp.sum}
-            </div>
-        </div>
-    </div>
-</li>`)}
-${$h`<li>
-    <div class="item-content">
-        <div class="item-media">
-            <i class="icon material-icons if-md">equal</i>
-        </div>
-        <div class="item-inner">
-            <div class="item-title">
-                Totalt
-            </div>
-            <div class="item-after">
-                ${expenses[expense]?.reduce((sum,expense) => {
-                return sum + expense.sum;
-                },0)}
-            </div>
-        </div>
-    </div>
-</li>`}
-                </ul>
-            </div>
+      <div class="card">
+        <div class="card-header item-title">${expense}</div>
+        <div class="card-content">
+          <div class="list list-dividers">
+            <ul>
+              ${groupedExpenses.value[expense]?.map((exp) => {
+              if (!activeUser.value) {
+              return "";
+              }
+              return $h`<li>
+                <a class="item-link item-content popover-open expense-item" data-popover=".popover-menu"
+                  data-expense="${exp.id}">
+                  <div class="item-media">
+                    <i class="icon material-icons if-md icon-${exp.sum < 0 ? "red" : "green"}">${exp.sum < 0 ? "remove" : "add"}</i>
+                  </div>
+                  <div class="item-inner">
+                    <div class="item-title">
+                      ${exp.description}
+                    </div>
+                    <div class="item-after">
+                      ${exp.sum}kr
+                    </div>
+                </a>
           </div>
-          <div class="card-footer">${expense.date}</div>
+          </li>`}
+          )}
+          ${
+
+          $h`<li>
+            <div class="item-content">
+              <div class="item-media">
+                <i class="icon material-icons if-md">equal</i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title">
+                  Totalt
+                </div>
+                <div class="item-after">
+                  ${activeUser.value != null ? groupedExpenses.value[expense]?.reduce((sum,expense) => {
+                  return sum + expense.sum;
+                  },0) : ""}
+                </div>
+              </div>
+            </div>
+          </li>`}
+          </ul>
         </div>
-      `
+      </div>
+      <div class="card-footer">${expense.date}</div>
+    </div>
+    `
     }
     )}
+
+    // START POPOVER EXPENSE
+    <div class="popover popover-menu">
+      <div class="popover-angle"></div>
+      <div class="popover-inner">
+        <div class="list">
+          <ul>
+            <li>
+              <div class="item-inner">
+                <div class="item-title"> ${activeExpense.value?.description ?? "Tomt"}</div>
+              </div>
+            </li>
+            <li>
+              <a class="item-link item-content popover-close" @click=${createExpensePopup}>
+                <div class="item-media">
+                  <i class="icon material-icons if-md">edit</i>
+                </div>
+                <div class="item-inner">
+                  <div class="item-title">Redigera</div>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a class="item-link item-content">
+                <div class="item-media">
+                  <i class="icon material-icons icon-red if-md">delete</i>
+                </div>
+                <div class="item-inner">
+                  <div class="item-title">Radera</div>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
+    <!-- Additional fab-extended class -->
+
+  </div>
+  <div class="fab fab-right-bottom">
+    <a>
+      <i class="icon material-icons if-md">filter_alt</i>
+    </a>
+    <div class="fab-buttons fab-buttons-top">
+      <a href="" class="fab-label-button" @click=${filterExpenses}>
+        <span>1</span>
+        <span class="fab-label">Fasta kostnader</span>
+      </a>
+      <a href="" class="fab-label-button">
+        <span>2</span>
+        <span class="fab-label">Sparande</span>
+      </a>
+      <a href="" class="fab-label-button">
+        <span>3</span>
+        <span class="fab-label">Hemlig bonus</span>
+      </a>
     </div>
+  </div>
   </div>
 </template>
 <script>
-  export default (props,{$store,$,$on}) => {
-    const expenses = props.expenses;
-    
- 
+  export default async (props,{$store,$,$on,$f7,$update}) => {
+
+    await $store.dispatch("fetchExpenses");
+    var groupedExpenses = $store.getters.getCategorizedExpenses;
+    var expenses = $store.getters.getExpenses;
+    var activeExpense = $store.getters.getActiveExpense;
+    const activeUser = $store.getters.getActiveUser;
+
+    var includeFixed = true;
+    var includeSavings = true;
+
+    $on("pageInit",() => {
+      let expenseButtons = document.querySelectorAll(".expense-item");
+      for (var expenseButton of expenseButtons) {
+        expenseButton.addEventListener("click", (e) => {
+          var expenseId= e.target
+            .closest("a")
+            .attributes["data-expense"]
+            .value;
+            
+            var clickedExpense = expenses.value.filter(expense => expense.id === expenseId)[0];
+            $store.dispatch("setActiveExpense", clickedExpense);
+            console.log($store.getters.getActiveExpense)
+          
+        })
+      }
+    });
+
+    const filterExpenses = () => {
+      includeFixed = !includeFixed;
+      includeSavings = !includeSavings;
+      $store.dispatch("filterExpenses", {
+        includeFixed,
+        includeSavings
+      });
+    }
+
+
+    let expensePopup;
+    const createExpensePopup = () => {
+      // Create popup
+      if (!expensePopup) {
+        expensePopup = $f7.popup.create({
+          content: /*html*/`
+            <div class="popup">
+              <div class="page">
+                <div class="navbar">
+                  <div class="navbar-bg"></div>
+                  <div class="navbar-inner">
+                    <div class="title">Dynamic Popup</div>
+                    <div class="right"><a  class="link popup-close">Close</a></div>
+                  </div>
+                </div>
+                <div class="page-content">
+                  ${activeExpense.value.description}
+                </div>
+              </div>
+            </div>
+          `
+        });
+      }
+      // Open it
+      expensePopup.open();
+    }
+
 
     return $render;
   }

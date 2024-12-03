@@ -1,42 +1,36 @@
 {
-  "name": "BudgetTracker2",
+  "name": "Budget Tracker",
   "short_name": "BudgetTracker2",
   "description": "BudgetTracker2",
   "lang": "en-US",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#26263a",
-  "theme_color": "#26263a",
+  "background_color": "#4392B2",
+  "theme_color": "#4392B2",
   "icons": [
-    {
-      "src": "/icons/128x128.png",
-      "sizes": "128x128",
-      "type": "image/png"
-    },
-    {
-      "src": "/icons/144x144.png",
-      "sizes": "144x144",
-      "type": "image/png"
-    },
-    {
-      "src": "/icons/152x152.png",
-      "sizes": "152x152",
-      "type": "image/png"
-    },
     {
       "src": "/icons/192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/icons/256x256.png",
-      "sizes": "256x256",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icons/512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/adaptive-icons/foreground.png",
+      "sizes": "432x432",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/adaptive-icons/background.png",
+      "sizes": "432x432",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

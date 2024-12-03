@@ -1,0 +1,105 @@
+<template>
+  <div class="page" data-name="stats">
+	<div class="navbar">
+	  <div class="navbar-bg"></div>
+	  <div class="navbar-inner sliding">
+		<div class="title">Statistik</div>
+	  </div>
+	</div>
+	<div class="page-content">
+
+	<div class="card">
+      <div class="card-header">Lön per löneperiod</div>
+	      <div class="card-content card-content-padding">
+		  	<canvas style="height: 300px;" id="salaryChart"></canvas>
+		  </div>
+    </div>
+	
+	</div>
+  </div>
+</template>
+<script>
+  export default async (props,{$store,$,$on}) => {
+
+	await $store.dispatch("fetchFullYearExpenses");
+	var expenses = $store.getters.getFullYearExpenses;
+
+	$on("pageInit", () => {
+		 var graphData = calculateSalaryPerSalaryPeriod(expenses.value);
+		 const ctx = document.getElementById('salaryChart');
+		  new Chart(ctx, {
+			type: 'line',
+			data: {
+			  labels: graphData[0],
+			  borderColor: "#4994b2",
+			  fillColor: "#4994b2",
+			  datasets: [{
+				label: 'Lön',
+				data: graphData[1],
+				borderWidth: 1
+			  }]
+			},
+			options: {
+			  scales: {
+				y: {
+				  beginAtZero: true
+				}
+			  }
+			}
+		  });
+	})
+
+	const generateChart = (canvasId, type, labels, dataLabels, data) => {
+		let ctx = document.getElementById(canvasId);
+
+		if (dataLabels.length != data.length) {
+			throw new Error("Labels and data must have the same length");
+		}
+		let dataSets = [];
+		for (let i = 0; i < data.length; i++) {
+			dataSets.push({
+				label: dataLabels[i],
+				data: data[i],
+				borderColor: getRandomColor(),
+				borderWidth: 1,
+				fill: false
+			})
+		}
+
+		new Chart(ctx, {
+			type: type,
+			data: {
+				labels: labels,
+				datasets: dataSets
+			},
+			options: {
+				aspectRatio: 1,
+				scales: {
+					y: {
+						beginAtZero: true,
+					},
+				},
+			},
+		});
+	}
+
+	const  calculateSalaryPerSalaryPeriod = (expenses) =>  {
+		const result = [0,0,0,0,0,0,0,0,0,0,0,0];
+		const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+		for (var expense of expenses) {
+			if (expense.category != "Lön") {
+				continue;
+			}
+			result[expense.salaryPeriod] += Number(expense.sum);
+		};
+		months.unshift(months.pop());
+		result.unshift(result.pop());
+
+		return [months,result];
+
+	};
+
+	return $render;
+  }
+</script>

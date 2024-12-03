@@ -5,8 +5,26 @@ const request = require("request");
 const Database = require("@replit/database");
 const { group } = require("console");
 const _salaryPeriod = 10;
-
+const argon2 = require('argon2');
 const db = new Database();
+
+
+/*
+argon2.hash("password").then((password) => {
+	const myUser = {
+		userName: "test",
+		password: password,
+		userId: genRanHex(6)
+	};
+	db.set("users", [myUser]).then(() => {
+		console.log("Set user")
+	});
+	
+})
+*/
+
+
+
 
 const url = process.env["API_URL"];
 sendWebRequestToAPI(url, (data) => {
@@ -27,7 +45,7 @@ app.use(express.json()); // This is required to parse JSON in the body of reques
 app.get("/api/expenses", (req, res) => {
 	var params = req.query;
 	console.log("Being communicated with");
-	params["period"] = _salaryPeriod;
+	//params["period"] = _salaryPeriod;
 	db.get("expenses").then((value) => {
 		var expenses = JSON.parse(value.value);
 		var result = filterExpenses(expenses, params);
@@ -35,6 +53,18 @@ app.get("/api/expenses", (req, res) => {
 		res.end();
 	});
 });
+
+app.get("/api/users", (req, res) => {
+	console.log("Being communicated with userwise")
+	var params = req.query;
+	console.log(params);
+	db.get("users").then((users) => {
+		let user = users.value.find((user) => user.userId == params.id);
+		delete user.password;
+		res.status(200).json(user);
+		res.end();
+	})
+})
 
 app.get("/api/budget", (req, res) => {
 	var params = req.query;
@@ -66,6 +96,52 @@ app.post("/api/post/budget", (req, res) => {
 			message: "Internal Server Error: Something went wrong.",
 			error: error.message, // Include error message for debugging
 		});
+	}
+});
+
+app.post("/api/post/login", async (req, res) => {
+	console.log(req.body);
+	var invalidCredentials = false;
+	try {
+		// Process the data here (e.g., save to database)
+		await db
+			.get("users")
+			.then((value) => {
+				var allUsers = value.value;
+				console.log(`Got all users`);
+				console.log(allUsers);
+				var user = allUsers.find((user) => {
+					return (
+						user.userName === req.body.username &&
+					argon2.verify(user.password,req.body.password)
+					);
+				});
+				if (!user) {
+					invalidCredentials = true;
+					console.log(`No valid user was found`);
+					throw new Error("Invalid credenials");
+				}
+				console.log(`I am prepared to send succesfulness`);
+				delete user.password;
+				res.status(200).json({
+					message: "Valid Credentials",
+					data: user,
+				});
+			})
+			.catch((error) => {
+				console.log(`I am in the first catch`);
+				return res.status(500).json({
+					message: "Internal Server Error: Something went wrong.",
+					error: error.message, // Include error message for debugging
+				});
+			});
+	} catch (error) {
+		console.log(`I am in the second catch`);
+		res.status(invalidCredentials? 401 : 500).json({
+			message: invalidCredentials ? "Invalid Credentials" : "Internal Server Error: Something went wrong.",
+			error: error.message, // Include error message for debugging
+		});
+		return;
 	}
 });
 
@@ -121,7 +197,11 @@ function filterFixed(expenses, include) {
 	include = { true: true, false: false }.include ?? false;
 	if (include) return expenses;
 	return expenses.filter((expense) => {
-		return !expense.isFixedExpense && expense.category != "Lön" &&expense.category != "Xtraspar";
+		return (
+			!expense.isFixedExpense &&
+			expense.category != "Lön" &&
+			expense.category != "Xtraspar"
+		);
 	});
 }
 
@@ -156,4 +236,10 @@ function getStandardBudget() {
 		"Nöje & underhållning": 0,
 		"SL biljett": 0,
 	};
+}
+
+function genRanHex(size) {
+	return [...Array(size)]
+		.map(() => Math.floor(Math.random() * 16).toString(16))
+		.join("");
 }
