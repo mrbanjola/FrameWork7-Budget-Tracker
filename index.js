@@ -5,30 +5,34 @@ const request = require("request");
 const Database = require("@replit/database");
 const { group } = require("console");
 const _salaryPeriod = 10;
-const argon2 = require('argon2');
+const argon2 = require("argon2");
+const cookieParser = require("cookie-parser");
 const db = new Database();
 
-
 /*
-argon2.hash("password").then((password) => {
+argon2.hash("dsfasfadsfa:)").then((password) => {
 	const myUser = {
-		userName: "test",
+		userName: "kalle",
 		password: password,
-		userId: genRanHex(6)
+		userId: "d7be82",
+		firstName: "Kalle",
+		APIurl: process.env["API_URL"]
 	};
 	db.set("users", [myUser]).then(() => {
 		console.log("Set user")
 	});
-	
 })
 */
-
-
-
+db.get("users").then(users => console.log(users));
 
 const url = process.env["API_URL"];
 sendWebRequestToAPI(url, (data) => {
-	db.set("expenses", data);
+	db.set("expenses", [
+		{
+			user: "d7be82",
+			expenses: data,
+		},
+	]);
 	let availableCategories = Array.from(
 		new Set(JSON.parse(data).map((expense) => expense.category)),
 	);
@@ -40,31 +44,59 @@ app.use(express.static(path.join(__dirname, "www")));
 
 // Middleware to parse JSON request body
 app.use(express.json()); // This is required to parse JSON in the body of requests
+app.use(cookieParser());
 
 // Handle all other routes
 app.get("/api/expenses", (req, res) => {
 	var params = req.query;
-	console.log("Being communicated with");
+	var userId = params.userid;
+
+	console.log("Being communicated with expenseswise");
 	//params["period"] = _salaryPeriod;
 	db.get("expenses").then((value) => {
-		var expenses = JSON.parse(value.value);
-		var result = filterExpenses(expenses, params);
-		res.json(result);
-		res.end();
+		var expenses = value.value;
+		var dataForUser = expenses.find((expense) => expense.user === userId);
+		if (dataForUser) {
+			var expensesForUser = JSON.parse(dataForUser.expenses);
+			var result = filterExpenses(expensesForUser, params);
+			res.status(200).json(result);
+			res.end();
+		} else {
+			res.status(500).json({
+				error: "No expenses found for this user",
+			});
+		}
 	});
 });
 
 app.get("/api/users", (req, res) => {
-	console.log("Being communicated with userwise")
-	var params = req.query;
-	console.log(params);
+	console.log("Being communicated with userwise");
+	var {id} = req.query;
+	console.log(id)
+	if (!id) {
+		res.status(500).json({
+			status: "not good"
+		})
+	}
 	db.get("users").then((users) => {
-		let user = users.value.find((user) => user.userId == params.id);
-		delete user.password;
-		res.status(200).json(user);
+		let user = users.value.find((user) => user.userId == id);
+		if (!user || user.sessionToken != req.cookies.session_token) {
+			res.status(401).json({
+				success: false,
+				message: "User not found"
+			});
+			res.end();
+			return;
+		}
+		res.status(200).json({
+			userName: user.userName,
+			firstName: user.firstName,
+			APIurl: user.APIurl,
+			userId: user.userId,
+		});
 		res.end();
-	})
-})
+	});
+});
 
 app.get("/api/budget", (req, res) => {
 	var params = req.query;
@@ -100,48 +132,56 @@ app.post("/api/post/budget", (req, res) => {
 });
 
 app.post("/api/post/login", async (req, res) => {
-	console.log(req.body);
-	var invalidCredentials = false;
+	console.log(req.cookies);
+	const { username, password, rememberMe } = req.body;
+	if (!username || !password) {
+		return res
+			.status(400)
+			.json({ message: "Username and password are required." });
+	}
+
 	try {
-		// Process the data here (e.g., save to database)
-		await db
-			.get("users")
-			.then((value) => {
-				var allUsers = value.value;
-				console.log(`Got all users`);
-				console.log(allUsers);
-				var user = allUsers.find((user) => {
-					return (
-						user.userName === req.body.username &&
-					argon2.verify(user.password,req.body.password)
-					);
-				});
-				if (!user) {
-					invalidCredentials = true;
-					console.log(`No valid user was found`);
-					throw new Error("Invalid credenials");
-				}
-				console.log(`I am prepared to send succesfulness`);
-				delete user.password;
-				res.status(200).json({
-					message: "Valid Credentials",
-					data: user,
-				});
-			})
-			.catch((error) => {
-				console.log(`I am in the first catch`);
-				return res.status(500).json({
-					message: "Internal Server Error: Something went wrong.",
-					error: error.message, // Include error message for debugging
-				});
+		const users = await db.get("users");
+		const user = users.value.find((u) => u.userName === username);
+
+		if (!user) {
+			return res.status(401).json({ message: "Invalid credentials." });
+		}
+
+		const isPasswordValid = await argon2.verify(user.password, password);
+		if (!isPasswordValid) {
+			return res.status(401).json({ message: "Invalid credentials." });
+		}
+
+		if (rememberMe) {
+			// Generate session token (JWT or custom token)
+			const sessionToken = genRanHex(32); // Replace with a JWT for production
+			users.value[users.value.indexOf(user)].sessionToken = sessionToken;
+			await db.set("users", users.value);
+			res.cookie("session_token", sessionToken, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === "production",
+				sameSite: "Strict",
+				maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 			});
-	} catch (error) {
-		console.log(`I am in the second catch`);
-		res.status(invalidCredentials? 401 : 500).json({
-			message: invalidCredentials ? "Invalid Credentials" : "Internal Server Error: Something went wrong.",
-			error: error.message, // Include error message for debugging
+
+			res.cookie("userId", user.userId, {
+				httpOnly: false,
+				secure: process.env.NODE_ENV === "production",
+				sameSite: "Strict",
+				maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+			});
+		}
+		
+
+		// Send response
+		res.status(200).json({
+			message: "Login successful",
+			data: { userName: user.userName, userId: user.userId },
 		});
-		return;
+	} catch (error) {
+		console.error("Login Error:", error);
+		res.status(500).json({ message: "Internal server error" });
 	}
 });
 

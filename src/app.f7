@@ -73,7 +73,7 @@
                       <div class="item-inner">
                         <div class="item-title item-label">Namn</div>
                         <div class="item-input-wrap">
-                          <input type="text" name="name" placeholder="Vad heter du?" />
+                          <input type="text" name="name" placeholder="Vad heter du?" value=${activeUser.value.firstName??""} />
                         </div>
                       </div>
                     </div>
@@ -83,7 +83,7 @@
                       <div class="item-inner">
                         <div class="item-title item-label">Länk till kalkylark</div>
                         <div class="item-input-wrap">
-                          <input type="text" name="name" placeholder="URL för inläsning av transaktioner." />
+                          <input type="text" name="api-url" placeholder="URL för inläsning av transaktioner." value=${activeUser.value.APIurl ?? ""}/>
                         </div>
                       </div>
                     </div>
@@ -118,7 +118,7 @@
                       <div class="item-inner">
                         <div class="item-title item-label">Filter för transaktioner</div>
                         <div class="item-input-wrap">
-                          <select name="gender">
+                          <select name="filter-type">
                             <option value="all" selected="selected">Alla</option>
                             <option value="no-fixed">Ej fasta kostnader</option>
                             <option value="no-savings">Ej sparande</option>
@@ -142,8 +142,14 @@
                   </li>
                 </ul>
               </form>
-              <div class="block block-strong grid grid-cols-1 grid-gap">
+              <div class="block grid grid-cols-1 grid-gap">
                 <a class="button button-fill" href="#">Spara inställningar</a>
+              </div>
+              <div class="block-title">Kontoinställningar</div>
+              <div class="block">
+                <div class="grid grid-cols-1 grid-gap">
+                  <button class="button button-fill color-red" id="log-out-button" @click=${openConfirmLogout}>Logga ut</button>
+                </div>
               </div>
             </div>
           </div>
@@ -179,17 +185,17 @@
       </div>
       <div class="list">
         <ul>
-        <li class="item-content">
-      <div class="item-inner">
-        <div class="item-title">Kom ihåg mig</div>
-        <div class="item-after">
-          <label class="toggle">
+          <li class="item-content">
+            <div class="item-inner">
+              <div class="item-title">Kom ihåg mig</div>
+              <div class="item-after">
+                <label class="toggle">
             <input type="checkbox" id="rememberme" />
             <span class="toggle-icon"></span>
           </label>
-        </div>
-      </div>
-    </li>
+              </div>
+            </div>
+          </li>
           <li>
             <a href="#" class="item-link list-button login-button" @click="${handleLogin}">Sign In</a>
 
@@ -203,7 +209,7 @@
   </div>
 </template>
 <script>
-  export default (props, { $f7, $update, $store, $ }) => {
+  export default async (props, { $f7, $update, $store, $ }) => {
 
   var activeUser = $store.getters.getActiveUser;
 
@@ -218,7 +224,7 @@
       password = e.target.value;
       $update();
     }
-    const handleLogin = () => {
+    const handleLogin = async () => {
     if (password == "" || username == "") {
       return;
     }
@@ -226,31 +232,37 @@
      $f7.preloader.show();
       var rememberMe = document.querySelector("#rememberme").checked;
       console.log(rememberMe);
-      $store.dispatch("login",{
+      await $store.dispatch("login",{
       username,
-      password
-      }).then((loginResult) => {
-        console.log("I am inside the so called .then. Look at this result");
-        console.log(loginResult);
-        if (loginResult.success) {
-          if (rememberMe) {
-            setCookie("userId", loginResult.userData.userId, 30);
-          }
-          $f7.preloader.hide();
-          $store.dispatch("setActiveUser",loginResult.userData);
-        }
+      password,
+      rememberMe
+      });
 
-        $update();
-      })
-
-
+      $f7.preloader.hide();
+      
     }
+
+    const handleLogOut = () => {
+      delete_cookie("userId");
+      $store.dispatch("setActiveUser",null);
+      window.location = "/";
+      }
+
+      const openConfirmLogout = () => {
+        $f7.dialog.confirm('Är du säker på att du vill logga ut?', function () {
+          handleLogOut();
+        });
+      }
 
     const setCookie = (cname, cvalue, exdays) => {
       const d = new Date();
       d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
       let expires = "expires="+d.toUTCString();
       document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    };
+
+    const delete_cookie = (name) => {
+      document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     };
 
     return $render;

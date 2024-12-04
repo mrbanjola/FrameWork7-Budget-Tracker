@@ -32,17 +32,21 @@ var app = new Framework7({
   component: App, // App main component
   // App store
   on: {
-    init: (e,page) => {
+    init: async (e, page) => {
       console.log("App init");
       let userCookie = getCookieValue("userId");
       console.log(userCookie);
       if(userCookie != "") {
         console.log("Hello, there is userCookie")
-        store.dispatch("fetchUserById",userCookie).then(userData => {
-          console.log(userData);
-          store.dispatch("setActiveUser",userData);
-          
-        })
+        let result = await store.dispatch("fetchUserById",userCookie)
+        console.log(result);
+        if (result.success) {
+          store.dispatch("setActiveUser",result.userData);
+        } else {
+          return;
+        }
+        
+
       }
     }
   },

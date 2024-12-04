@@ -72,6 +72,13 @@
   var expenses = $store.getters.getAllExpenses;
   var prevDate;
 
+  $on("pageInit", () => {
+    console.log(`According to timeline, expenses is:`);
+    console.log(expenses);
+  })
+  
+  
+
   const getFormattedDate = (date) => {
     date = new Date(date);
     let dateNumber = date.getDate();

@@ -7,7 +7,16 @@
     </div>
   </div>
   <div class="page-content">
-  <BlockTitle>Rörliga kostnader</BlockTitle>
+  ${expenses.value.length > 0 ?  $h`<div class="block-title">Rörliga kostnader</div>` : $h`
+  <div class="block">
+    <div class="block-title">
+    Du verkar inte ha några transaktioner att visa.
+    </div>
+    <div>
+      <p>Antingen lever du ett liv helt utanför det moderna samhället, eller så har du inte angivit en giltig URL till ditt kalkylark. Oavsett vilket bör du se över dina val och få ordning på situationen.
+      </p>
+    </div>
+  </div>`}
     ${Object.keys(categorizedExpenses.value).map((category) => {
     if (!budget.value[category]) {return "";}
     return $h`

@@ -16,6 +16,11 @@
       <div class="block cover-image-container">
         <img class="cover-image" src="../images/nerd.png"></img>
       </div>
+      <div class="block">
+        <div class="block-title">
+          Välkommen ${activeUser.value.firstName}
+        </div>
+      </div>
       <div class="block-title">Alla transaktioner</div>
       <div class="list list-strong inset list-dividers-ios">
         <ul>
@@ -45,6 +50,7 @@
 </template>
 <script>
 export default (props, {$f7,$store}) => {  
+  const activeUser = $store.getters.getActiveUser;
   return $render;
 }
 </script>
