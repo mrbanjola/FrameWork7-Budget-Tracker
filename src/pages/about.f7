@@ -67,8 +67,13 @@
 </template>
 <script>
  export default async (props, { $, $on, $f7, $store, $update}) => {
-
-  await $store.dispatch("fetchExpenses");
+/*
+  await $store.dispatch("fetchExpenses").then((result) => {
+    console.log(result)
+  }).catch((error) => {
+  console.log(error);
+  }) ;
+  */
   var expenses = $store.getters.getAllExpenses;
   var prevDate;
 

@@ -95,9 +95,6 @@
 </template>
 <script>
   export default async (props, { $, $on, $f7, $store, $update}) => {
-    // Fetch initial data
-    await $store.dispatch("fetchExpenses");
-    await $store.dispatch("fetchBudget");
     const expenses = $store.getters.getExpenses;
     const categorizedExpenses = $store.getters.getCategorizedExpenses;
     const budget = $store.getters.getBudget;

@@ -16,7 +16,7 @@
             <span class="tabbar-label">Översikt</span>
           </a>
           <a href="#view-stats" class="tab-link">
-            <i class="icon material-icons if-md">lock</i>
+            <i class="icon material-icons if-md">equalizer</i>
             <span class="tabbar-label">Statistik</span>
           </a>
           <a href="#view-settings" class="tab-link">
@@ -236,9 +236,25 @@
       username,
       password,
       rememberMe
+      }).then(async (result) => {
+      console.log("Login went well.");
+      await Promise.all([
+        $store.dispatch("fetchExpenses"),
+        $store.dispatch("fetchFullYearExpenses"),
+        $store.dispatch("fetchBudget")
+      ]).then((results) => {
+        console.log("These are the results");
+      }).catch(error => {
+        console.log("This is the error");
+        console.log(error);
+      })
+      }).catch((error) => {
+        console.log("Login went poorly");
+        console.log(error);
       });
 
       $f7.preloader.hide();
+
       
     }
 

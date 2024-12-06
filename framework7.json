@@ -1,9 +1,6 @@
 {
   "cwd": "/home/runner/workspace",
-  "type": [
-    "pwa",
-    "web"
-  ],
+  "type": ["pwa", "web"],
   "name": "BudgetTracker2",
   "framework": "core",
   "template": "tabs",

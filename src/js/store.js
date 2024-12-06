@@ -1,32 +1,37 @@
 import { createStore } from "framework7";
 import GroupExpensesByCategory from "../Utils/GroupExpenses.js";
-import {setCookie} from "../Utils/CookieHelpers.js";
 
 const store = createStore({
   state: {
-    allExpenses: null,
-    expenses: null, // Global variable to store expenses,
-    budget: null, // Global variable to store budget,
-    categorizedExpenses: null, // Global variable to store categorized expenses
+    allExpenses: [],
+    expenses: [], // Global variable to store expenses,
+    budget: {}, // Global variable to store budget,
+    categorizedExpenses: {}, // Global variable to store categorized expenses
     activeExpense: null, // Global variable to store active expense
     includeFixed: false, // Global variable to store whether to include fixed expenses
     includeSavings: false, // Global variable to store whether to include savings
     salaryPeriod: 10,
-    fullYearExpenses: null,
+    fullYearExpenses: [],
     activeUser: null,
-    rememberMe: false,
   },
   actions: {
     async fetchExpenses({ state }) {
       return new Promise((resolve, reject) => {
         if (state.expenses && state.expenses.length > 0) {
-          resolve(); // If data is already fetched, be happy
+          resolve("Data already fetched"); // If data is already fetched, be happy
+        }
+        if (!state.activeUser || !state.activeUser.APIurl) {
+          state.expenses = [];
+          state.allExpenses = [];
+          state.categorizedExpenses = {};
+          reject("No active user");
+          return;
         }
         try {
           console.log(`I will be fetching expenses for user`);
           console.log(state.activeUser);
           fetch(
-            `/api/expenses?period=${state.salaryPeriod}&userid=${state.activeUser.userId}`,
+            `/api/expenses?period=${state.salaryPeriod}&id=${state.activeUser.userId}`,
           ).then((response) => {
             if (!response.ok) {
               state.expenses = [];
@@ -56,12 +61,20 @@ const store = createStore({
     },
     fetchFullYearExpenses({ state }) {
       return new Promise(async (resolve, reject) => {
-        if (state.fullYearExpenses) {
-          resolve(); // If data is already fetched, avoid making another API request
+        if (state.fullYearExpenses && state.fullYearExpenses.length > 0) {
+          resolve({
+            success: true,
+            message: "Full year expenses already fetched",
+          }); // If data is already fetched, be happy
+        }
+        if (!state.activeUser || !state.activeUser.APIurl) {
+          state.fullYearExpenses = [];
+          reject("No active user");
+          return;
         }
         try {
           const response = await fetch(
-            `/api/expenses?userid=${state.activeUser.userId}`,
+            `/api/expenses?id=${state.activeUser.userId}`,
           ); // Replace with your API endpoint
           if (!response.ok) {
             reject("Failed to fetch full year expenses:");
@@ -82,11 +95,19 @@ const store = createStore({
         if (state.budget) {
           resolve(); // If data is already fetched, avoid making another API request
         }
+        if (!state.activeUser) {
+          state.budget = {};
+          reject("No active user");
+          return;
+        }
         try {
-          const response = await fetch("/api/budget"); // Replace with your API endpoint
+          const response = await fetch(
+            `/api/budget?id=${state.activeUser.userId}`,
+          ); // Replace with your API endpoint
           if (!response.ok) {
             reject("Failed to fetch budget:");
           } else {
+            console.log(response);
             const data = await response.json();
             state.budget = data; // Save to global state
             resolve();
@@ -102,6 +123,7 @@ const store = createStore({
       state.budget = budget;
     },
     setActiveExpense({ state }, expense) {
+      console.log(expense);
       state.activeExpense = expense;
     },
     filterExpenses({ state }, params) {
@@ -134,11 +156,13 @@ const store = createStore({
             success: true,
             message: "User set successfully",
           });
+          return;
         } else {
           reject({
             success: false,
             message: "No user id provided",
           });
+          return;
         }
       });
     },
@@ -147,15 +171,16 @@ const store = createStore({
       return new Promise((resolve, reject) => {
         fetch(`/api/users?id=${userId}`).then((response) => {
           if (response.ok) {
-            response.json().then((userData) => {
+            response.json().then((responseData) => {
               console.log(`Hello. This is the user data:`);
-              console.log(userData);
+              console.log(responseData);
               resolve({
                 success: true,
-                userData,
+                userData: responseData.data,
               });
             });
           } else {
+            console.log("fetchUserById failed");
             reject({
               success: false,
               userData: null,
@@ -175,12 +200,15 @@ const store = createStore({
             "Content-Type": "application/json",
           },
           method: "POST",
-          credentials: 'include',
+          credentials: "include",
           body: JSON.stringify(userInformation),
         })
           .then((res) => {
             if (res.ok) {
+              console.log("We got good stuff from /api/post/login");
               res.json().then((responseData) => {
+                console.log("Here comes the json");
+                console.log(responseData);
                 userData = responseData.data;
                 success = true;
                 state.activeUser = userData;
@@ -221,18 +249,3 @@ const store = createStore({
 });
 
 export default store;
-
-async function wait(ms) {
-  setTimeout(function () {
-    console.log("I should be printed second");
-  }, ms);
-  console.log("I shoud be printed third");
-}
-
-function test() {
-  console.log("I should be printed first");
-  wait(2000).then(function () {
-    console.log("I am a wildcard");
-  });
-  console.log("I shoud be printed fourth");
-}

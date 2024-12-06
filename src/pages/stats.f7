@@ -19,37 +19,31 @@
   </div>
 </template>
 <script>
-  export default async (props,{$store,$,$on}) => {
-
-	await $store.dispatch("fetchFullYearExpenses");
+  export default async (props,{$f7,$store,$,$on}) => {
 	var expenses = $store.getters.getFullYearExpenses;
-
-	$on("pageInit", () => {
+		
+	$on("pageInit", async () => {
+	let attempts = 0;
+	let maxAttempts = 15;
+	$f7.preloader.show();
+	while (expenses.length == 0 || attempts <= maxAttempts) {
+		console.log("Waiting for expenses.. Attempt: " + attempts)
+		await sleep(500);
+		++attempts;
+	}
+	$f7.preloader.hide();
 		 var graphData = calculateSalaryPerSalaryPeriod(expenses.value);
-		 const ctx = document.getElementById('salaryChart');
-		  new Chart(ctx, {
-			type: 'line',
-			data: {
-			  labels: graphData[0],
-			  borderColor: "#4994b2",
-			  fillColor: "#4994b2",
-			  datasets: [{
-				label: 'Lön',
-				data: graphData[1],
-				borderWidth: 1
-			  }]
-			},
-			options: {
-			  scales: {
-				y: {
-				  beginAtZero: true
-				}
-			  }
-			}
-		  });
+		 generateChart("salaryChart", `line`, graphData[0], ["Lön"], [graphData[1]]);
+		  
 	})
 
 	const generateChart = (canvasId, type, labels, dataLabels, data) => {
+		console.log("Labels");
+		console.log(labels);
+		console.log("Data:")
+		console.log(data)
+		console.log("Datalabels");
+		console.log(dataLabels)
 		let ctx = document.getElementById(canvasId);
 
 		if (dataLabels.length != data.length) {
@@ -60,7 +54,7 @@
 			dataSets.push({
 				label: dataLabels[i],
 				data: data[i],
-				borderColor: getRandomColor(),
+				borderColor: "#26263a",
 				borderWidth: 1,
 				fill: false
 			})
@@ -81,6 +75,10 @@
 				},
 			},
 		});
+	}
+
+	const sleep = async (millis) => {
+		return new Promise(resolve => setTimeout(resolve, millis));
 	}
 
 	const  calculateSalaryPerSalaryPeriod = (expenses) =>  {

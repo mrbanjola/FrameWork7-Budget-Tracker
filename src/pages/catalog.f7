@@ -18,7 +18,7 @@
           <span class="searchbar-disable-button">Cancel</span>
         </div>
       </form>
-      ${Object.keys(groupedExpenses.value).map((expense) => {
+      ${(expenses.value.length > 0) ? Object.keys(groupedExpenses.value).map((expense) => {
       if (!activeUser.value) {
       return "";
       }
@@ -75,7 +75,8 @@
     </div>
     `
     }
-    )}
+    ) : ""
+    }
 
     <!-- START POPOVER EXPENSE -->
     <div class="popover popover-menu">
@@ -138,8 +139,13 @@
 </template>
 <script>
   export default async (props,{$store,$,$on,$f7,$update}) => {
-
-    await $store.dispatch("fetchExpenses");
+  /*
+    await $store.dispatch("fetchExpenses").then((result) => {
+      console.log(result)
+    }).catch(error => {
+    console.log("Error")
+    })
+    */
     var groupedExpenses = $store.getters.getCategorizedExpenses;
     var expenses = $store.getters.getExpenses;
     var activeExpense = $store.getters.getActiveExpense;
@@ -148,7 +154,7 @@
     var includeFixed = true;
     var includeSavings = true;
 
-    $on("pageInit",() => {
+    $on("init",() => {
       let expenseButtons = document.querySelectorAll(".expense-item");
       for (var expenseButton of expenseButtons) {
         expenseButton.addEventListener("click", (e) => {
@@ -156,8 +162,9 @@
             .closest("a")
             .attributes["data-expense"]
             .value;
-            
-            var clickedExpense = expenses.value.filter(expense => expense.id === expenseId)[0];
+        console.log(expenseId)
+            var clickedExpense = expenses.find(expense => expense.id === expenseId);
+            console.log(clickedExpense);
             $store.dispatch("setActiveExpense", clickedExpense);
             console.log($store.getters.getActiveExpense)
           
