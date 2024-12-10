@@ -24,7 +24,7 @@ var app = new Framework7({
   colors: {
     primary: "#4392B2",
   },
-  darkMode: false,
+  darkMode: true,
 
   el: "#app", // App root element
   component: App, // App main component
