@@ -7,6 +7,10 @@
       </div>
     </div>
     <div class="page-content">
+      <div class="block-title">Inline with custom toolbar</div>
+      <div class="block block-strong no-padding">
+        <div id="demo-calendar-inline-container"></div>
+      </div>
       <div class="searchbar-backdrop"></div>
       <form class="searchbar">
         <div class="searchbar-inner">
@@ -61,9 +65,9 @@
                   Totalt
                 </div>
                 <div class="item-after">
-                  ${activeUser.value != null ? groupedExpenses.value[expense]?.reduce((sum,expense) => {
+                  ${activeUser.value != null ? Math.round(groupedExpenses.value[expense]?.reduce((sum,expense) => {
                   return sum + expense.sum;
-                  },0) : ""}
+                  },0)) : ""}
                 </div>
               </div>
             </div>
@@ -138,7 +142,13 @@
   </div>
 </template>
 <script>
-  export default async (props,{$store,$,$on,$f7,$update}) => {
+  import Gradient from 'javascript-color-gradient';
+
+export default async (props,{$store,$,$on,$f7,$update}) => {
+  const gradientArray = new Gradient()
+    .setColorGradient('#3498db', '#e74c3c')
+    .setMidpoint(5)
+    .getColors();
   /*
     await $store.dispatch("fetchExpenses").then((result) => {
       console.log(result)
@@ -151,10 +161,11 @@
     var activeExpense = $store.getters.getActiveExpense;
     const activeUser = $store.getters.getActiveUser;
 
+
     var includeFixed = true;
     var includeSavings = true;
 
-    $on("init",() => {
+    $on("pageInit",() => {
       let expenseButtons = document.querySelectorAll(".expense-item");
       for (var expenseButton of expenseButtons) {
         expenseButton.addEventListener("click", (e) => {
@@ -168,8 +179,44 @@
             $store.dispatch("setActiveExpense", clickedExpense);
             console.log($store.getters.getActiveExpense)
           
-        })
-      }
+        });
+      };
+
+      // Inline with custom toolbar
+      var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      var calendarInline = $f7.calendar.create({
+        containerEl: '#demo-calendar-inline-container',
+        value: [new Date()],
+        renderToolbar: function () {
+          return '<div class="toolbar calendar-custom-toolbar no-shadow">' +
+            '<div class="toolbar-inner">' +
+            '<div class="left">' +
+            '<a  class="link icon-only"><i class="icon icon-back"></i></a>' +
+            '</div>' +
+            '<div class="center"></div>' +
+            '<div class="right">' +
+            '<a  class="link icon-only"><i class="icon icon-forward"></i></a>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+        },
+        on: {
+          init: function (c) {
+            $('.calendar-custom-toolbar .center').text(monthNames[c.currentMonth] + ', ' + c.currentYear);
+            $('.calendar-custom-toolbar .left .link').on('click', function () {
+              calendarInline.prevMonth();
+            });
+            $('.calendar-custom-toolbar .right .link').on('click', function () {
+              calendarInline.nextMonth();
+            });
+          },
+          monthYearChangeStart: function (c) {
+            $('.calendar-custom-toolbar .center').text(monthNames[c.currentMonth] + ', ' + c.currentYear);
+          }
+        }
+      });
+
+      
     });
 
     const filterExpenses = () => {
