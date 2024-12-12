@@ -22,7 +22,7 @@
           <span class="searchbar-disable-button">Cancel</span>
         </div>
       </form>
-      ${(expenses.value.length > 0) ? Object.keys(groupedExpenses.value).map((expense) => {
+      ${(expenses.value.length > 0) ? Object.keys(GroupExpensesByCategory(FilterExpenses(expenses.value, false, false))).map((expense) => {
       if (!activeUser.value) {
       return "";
       }
@@ -32,7 +32,7 @@
         <div class="card-content">
           <div class="list list-dividers">
             <ul>
-              ${groupedExpenses.value[expense]?.map((exp) => {
+              ${GroupExpensesByCategory(FilterExpenses(expenses.value,false,false))[expense]?.map((exp) => {
               if (!activeUser.value) {
               return "";
               }
@@ -65,7 +65,7 @@
                   Totalt
                 </div>
                 <div class="item-after">
-                  ${activeUser.value != null ? Math.round(groupedExpenses.value[expense]?.reduce((sum,expense) => {
+                  ${activeUser.value != null ? Math.round(GroupExpensesByCategory(FilterExpenses(expenses.value,false,false))[expense]?.reduce((sum,expense) => {
                   return sum + expense.sum;
                   },0)) : ""}
                 </div>
@@ -143,21 +143,20 @@
 </template>
 <script>
   import Gradient from 'javascript-color-gradient';
+  import { 
+  SumExpensesByDate,
+  GroupExpensesByCategory,
+  FilterExpenses
+  } from "../Utils/GroupExpenses.js";
 
 export default async (props,{$store,$,$on,$f7,$update}) => {
-  const gradientArray = new Gradient()
-    .setColorGradient('#3498db', '#e74c3c')
-    .setMidpoint(5)
-    .getColors();
-  /*
-    await $store.dispatch("fetchExpenses").then((result) => {
-      console.log(result)
-    }).catch(error => {
-    console.log("Error")
-    })
-    */
-    var groupedExpenses = $store.getters.getCategorizedExpenses;
+    const sleep = async (millis) => {
+      return new Promise(resolve => setTimeout(resolve, millis));
+    };
+    
+    
     var expenses = $store.getters.getExpenses;
+    var allExpenses = $store.getters.getFullYearExpenses;
     var activeExpense = $store.getters.getActiveExpense;
     const activeUser = $store.getters.getActiveUser;
 
@@ -165,7 +164,57 @@ export default async (props,{$store,$,$on,$f7,$update}) => {
     var includeFixed = true;
     var includeSavings = true;
 
-    $on("pageInit",() => {
+    const getColor = (value) => {
+    return new Gradient()
+    .setColorGradient("#8acbec", "#f2062f")
+    .setMidpoint(20)
+    .getColor(value);
+    }
+
+    const handleDumbShit = (date) => {
+      //console.log(`Changing ${date}`)
+      var split = date.split("-");
+      //console.log(`I split it into ${split}`)
+      var result =  [[...split][0],parseInt([...split][1]) < 9 ? "0" + (1 + parseInt([...split][1])) : (1+ parseInt([...split][1])), parseInt([...split][2]) < 10 ? "0" + [...split][2] : [...split][2]].join("-");
+      //console.log(`Now i have ${result}`);
+      return result;
+    }
+    const setColors = () => {
+      const expenseSums = SumExpensesByDate([...allExpenses.value]);
+      let maxValue = Math.max(...Object.values(expenseSums));
+      let minValue = Math.min(...Object.values(expenseSums));
+      for (var date of Object.keys(expenseSums)) {
+        let dateBoxes = Array.from(document.querySelectorAll(".calendar-day"))
+        let dateBox = dateBoxes.filter(box => handleDumbShit(box.attributes["data-date"].value) == date);
+        if (dateBox) {
+           for (var dateBoxo of dateBox) {
+            dateBoxo.style.color = getColor(Math.ceil(20* ((expenseSums[date]- minValue + 0.1)/(maxValue-minValue))));
+            dateBoxo.addEventListener("click",(e) => {
+              $f7.popover.create({
+              el: ".popover-menu",
+              targetEl: e.target.closest(".calendar-date")
+              }).open();
+            })
+           }
+           
+        }
+      
+      }
+    }
+
+    
+
+    $on("pageInit",async () => {
+
+      let attempts = 0;
+      let maxAttempts = 150000;
+      $f7.preloader.show();
+      while (expenses.value.length == 0 && attempts <= maxAttempts) {
+        await sleep(300);
+        ++attempts;
+      }
+      $f7.preloader.hide();
+    
       let expenseButtons = document.querySelectorAll(".expense-item");
       for (var expenseButton of expenseButtons) {
         expenseButton.addEventListener("click", (e) => {
@@ -202,12 +251,15 @@ export default async (props,{$store,$,$on,$f7,$update}) => {
         },
         on: {
           init: function (c) {
+            setColors();
             $('.calendar-custom-toolbar .center').text(monthNames[c.currentMonth] + ', ' + c.currentYear);
             $('.calendar-custom-toolbar .left .link').on('click', function () {
               calendarInline.prevMonth();
+              setColors();
             });
             $('.calendar-custom-toolbar .right .link').on('click', function () {
               calendarInline.nextMonth();
+              setColors();
             });
           },
           monthYearChangeStart: function (c) {

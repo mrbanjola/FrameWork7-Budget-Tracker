@@ -24,11 +24,13 @@
 		
 	$on("pageInit", async () => {
 	let attempts = 0;
-	let maxAttempts = 15;
+	let maxAttempts = 15000;
 	$f7.preloader.show();
-	while (expenses.length == 0 || attempts <= maxAttempts) {
-		console.log("Waiting for expenses.. Attempt: " + attempts)
-		await sleep(500);
+	while (expenses.value.length == 0 && attempts <= maxAttempts) {
+		console.log("Waiting for expenses.. Attempt: " + attempts);
+		console.log("Curent expenses: ");
+		console.log(expenses.value);
+		await sleep(300);
 		++attempts;
 	}
 	$f7.preloader.hide();
@@ -54,7 +56,7 @@
 			dataSets.push({
 				label: dataLabels[i],
 				data: data[i],
-				borderColor: "#26263a",
+				borderColor: "#4392B2",
 				borderWidth: 1,
 				fill: false
 			})
@@ -83,13 +85,28 @@
 
 	const  calculateSalaryPerSalaryPeriod = (expenses) =>  {
 		const result = [0,0,0,0,0,0,0,0,0,0,0,0];
+		const shit = {
+		"2023-11": 11,
+		"2024-0": 0,
+		"2024-1": 1,
+		"2024-2": 2,
+		"2024-3": 3,
+		"2024-4": 4,
+		"2024-5": 5,
+		"2024-6": 6,
+		"2024-7": 7,
+		"2024-8": 8,
+		"2024-9": 9,
+		"2024-10": 10,
+		"2025-11": 11
+		};
 		const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 		for (var expense of expenses) {
 			if (expense.category != "Lön") {
 				continue;
 			}
-			result[expense.salaryPeriod] += Number(expense.sum);
+			result[shit[expense.salaryPeriod]] += Number(expense.sum);
 		};
 		months.unshift(months.pop());
 		result.unshift(result.pop());

@@ -93,7 +93,7 @@
                       <div class="item-inner">
                         <div class="item-title item-label">Löneperiod</div>
                         <div class="item-input-wrap">
-                          <select name="gender">
+                          <select name="salaryPeriod" id="salaryPeriod">
                             <option value="2023-11">December 2023</option>
                             <option value="2024-0">Januari 2024</option>
                             <option value="2024-1">Februari 2024</option>
@@ -143,7 +143,7 @@
                 </ul>
               </form>
               <div class="block grid grid-cols-1 grid-gap">
-                <a class="button button-fill" href="#">Spara inställningar</a>
+                <a class="button button-fill" href="#" @click=${handleChangeSalaryPeriod}>Spara inställningar</a>
               </div>
               <div class="block-title">Kontoinställningar</div>
               <div class="block">
@@ -262,6 +262,18 @@
       delete_cookie("userId");
       $store.dispatch("setActiveUser",null);
       window.location = "/";
+      };
+
+      const handleChangeSalaryPeriod = () => {
+        const salaryPeriod = document.querySelector("#salaryPeriod").value;
+        if (salaryPeriod != $store.state.salaryPeriod) {
+          console.log(`Setting salary period to ${salaryPeriod}`);
+          $store.dispatch("setSalaryPeriod",salaryPeriod);
+          $store.dispatch("fetchExpenses");
+        } else {
+          console.log(`f noNeedForChange()`);
+        }
+        
       }
 
       const openConfirmLogout = () => {

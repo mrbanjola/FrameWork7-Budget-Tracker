@@ -1,5 +1,6 @@
 import { createStore } from "framework7";
-import GroupExpensesByCategory from "../Utils/GroupExpenses.js";
+import { GroupExpensesByCategory } from "../Utils/GroupExpenses.js";
+import Gradient from "javascript-color-gradient";
 
 const store = createStore({
   state: {
@@ -10,7 +11,7 @@ const store = createStore({
     activeExpense: null, // Global variable to store active expense
     includeFixed: false, // Global variable to store whether to include fixed expenses
     includeSavings: false, // Global variable to store whether to include savings
-    salaryPeriod: 10,
+    salaryPeriod: "2024-10",
     fullYearExpenses: [],
     activeUser: null,
   },
@@ -58,6 +59,9 @@ const store = createStore({
     setExpenses({ state }, expenses) {
       state.expenses = expenses;
       state.categorizedExpenses = [...GroupExpensesByCategory(expenses)];
+    },
+    setSalaryPeriod({ state }, salaryPeriod) {
+      state.salaryPeriod = salaryPeriod;
     },
     fetchFullYearExpenses({ state }) {
       return new Promise(async (resolve, reject) => {
@@ -245,6 +249,14 @@ const store = createStore({
     getActiveUser({ state }) {
       return state.activeUser;
     },
+    getSalaryPeriod({ state }) {
+      return state.salaryPeriod;
+    },
+    getColor(value) {
+      return new Gradient()
+      .setColorGradient("#3F2CAF", "#e9446a")
+      .getColor(value);
+    }
   },
 });
 

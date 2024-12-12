@@ -49,12 +49,11 @@ var app = new Framework7({
                 store.dispatch("fetchBudget"),
               ])
                 .then((results) => {
-                  console.log("These are the results");
+                  console.log("Data fetched successfully");
                 })
                 .catch((error) => {
-                  console.log("This is the error");
-                  console.log(error);
-                });
+                  console.log("Error fetching expenses");
+                  console.error(error)                });
             })
             .catch((error) => {
               console.log(error);
