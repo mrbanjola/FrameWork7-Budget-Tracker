@@ -7,7 +7,7 @@
     </div>
   </div>
   <div class="page-content">
-  ${expenses.value.length > 0 ?  $h`<div class="block-title">Rörliga kostnader</div>` : $h`
+  ${FilterExpenses(expenses.value,false,false).length > 0 ?  $h`<div class="block-title">Rörliga kostnader</div>` : $h`
   <div class="block">
     <div class="block-title">
     Du verkar inte ha några transaktioner att visa.
@@ -17,7 +17,7 @@
       </p>
     </div>
   </div>`}
-    ${Object.keys(categorizedExpenses.value).map((category) => {
+    ${Object.keys(GroupExpensesByCategory(FilterExpenses(expenses.value,false,false))).map((category) => {
     if (!budget.value[category]) {return "";}
     return $h`
     <div class="card">
@@ -27,24 +27,21 @@
     <div
       class="gauge gauge-init my-gauge" budget-item="${category}"
       data-type="circle"
-      data-value=${categorizedExpenses.value[category].reduce((sum,expense) => {
+      data-value=${GroupExpensesByCategory(FilterExpenses(expenses.value,false,false))[category].reduce((sum,expense) => {
       return sum - expense.sum
       },0)/budget.value[category]}
-      data-value-text="${Math.ceil(categorizedExpenses.value[category].reduce((sum,expense) => {
+      data-value-text="${Math.ceil(GroupExpensesByCategory(FilterExpenses(expenses.value,false,false))[category].reduce((sum,expense) => {
       return sum + Math.abs(expense.sum)
       },0))}kr"
-      data-value-text-color="${getGaugeColor(categorizedExpenses.value[category].reduce((sum,expense) => {
+      data-value-text-color="${getGaugeColor(GroupExpensesByCategory(FilterExpenses(expenses.value,false,false))[category].reduce((sum,expense) => {
       return sum - expense.sum
       },0) / budget.value[category])}"
-      data-border-color="${getGaugeColor(categorizedExpenses.value[category].reduce((sum,expense) => {
+      data-border-color="${getGaugeColor(GroupExpensesByCategory(FilterExpenses(expenses.value,false,false))[category].reduce((sum,expense) => {
       return sum - expense.sum
       },0) / budget.value[category])}"
       data-label-text="av ${budget.value[category]}kr"
     ></div>
   </div>
-  <div class="card-footer">Spenderat - ${categorizedExpenses.value[category].reduce((sum,expense) => {
-      return sum - expense.sum
-      },0)}kr    Budgeterat - ${budget.value[category] ?? 0}kr</div>
 </div>`
     })}
   </div>
@@ -94,10 +91,13 @@
 </div>
 </template>
 <script>
+import { GroupExpensesByCategory,FilterExpenses } from "../Utils/GroupExpenses.js";
   export default async (props, { $, $on, $f7, $store, $update}) => {
     const expenses = $store.getters.getExpenses;
-    const categorizedExpenses = $store.getters.getCategorizedExpenses;
     const budget = $store.getters.getBudget;
+    const activeUser = $store.getters.getActiveUser;
+    const salaryPeriod = $store.getters.getSalaryPeriod;
+
 
     // Lifecycle hook to attach events
     $on("pageInit", () => {
@@ -130,21 +130,21 @@
           console.log(`Setting gauge for ${category}`)
           console.log(gaugesObject[category])
             gaugesObject[category].f7Gauge.update({
-              value: categorizedExpenses.value[category].reduce((sum,expense) => {
+              value: GroupExpensesByCategory(FilterExpenses(expenses.value,false,false))[category].reduce((sum,expense) => {
       return sum - expense.sum
       },0)/budget.value[category],
               labelText: `av ${budget.value[category]}kr`,
-              borderColor: getGaugeColor(categorizedExpenses.value[category].reduce((sum,expense) => {
+              borderColor: getGaugeColor(GroupExpensesByCategory(FilterExpenses(expenses.value,false,false))[category].reduce((sum,expense) => {
       return sum - expense.sum
       },0) / budget.value[category]),
-            valueTextColor: getGaugeColor(categorizedExpenses.value[category].reduce((sum,expense) => {
+            valueTextColor: getGaugeColor(GroupExpensesByCategory(FilterExpenses(expenses.value,false,false))[category].reduce((sum,expense) => {
       return sum - expense.sum
       },0) / budget.value[category])
             });
             }
 
           // Send data to the server
-          fetch("/api/post/budget", {
+          fetch(`/api/post/budget?id=${activeUser.value}&period=${salaryPeriod.value}`, {
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",

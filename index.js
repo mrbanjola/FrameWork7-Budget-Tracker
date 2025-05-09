@@ -3,7 +3,7 @@ const path = require("path");
 const app = express();
 const Database = require("@replit/database");
 const _salaryPeriod = 10;
-const argon2 = require("argon2");
+const argon2 =require("argon2");
 const cookieParser = require("cookie-parser");
 const db = new Database();
 
@@ -24,33 +24,55 @@ argon2.hash("dsfasfadsfa:)").then((password) => {
 db.list().then(keys => console.log(keys));
 db.get("users").then(user => console.log(user))
 
-
 db.get("budget").then((budget) => {
 	let wrongAgain = budget.value;
 	let kalle = wrongAgain[0];
 
+  let kallesUserName = kalle.user;
+
 	let helenesRealThing = {
 		user: 'de70f9',
 		budget: {
-			0: getStandardBudget(),
-			1: getStandardBudget(),
-			2: getStandardBudget(),
-			3: getStandardBudget(),
-			4: getStandardBudget(),
-			5: getStandardBudget(),
-			6: getStandardBudget(),
-			7: getStandardBudget(),
-			8: getStandardBudget(),
-			9: getStandardBudget(),
-			10: getStandardBudget(),
-			11: getStandardBudget(),
+			'2023-11': getStandardBudget(),
+			'2024-0': getStandardBudget(),
+			'2024-1': getStandardBudget(),
+			'2024-2': getStandardBudget(),
+			'2024-3': getStandardBudget(),
+			'2024-4': getStandardBudget(),
+			'2024-5': getStandardBudget(),
+			'2024-6': getStandardBudget(),
+			'2024-7': getStandardBudget(),
+			'2024-8': getStandardBudget(),
+			'2024-9': getStandardBudget(),
+			'2024-10': getStandardBudget(),
+			'2024-11': getStandardBudget(),
 		}
-	}
+	};
 
-	db.set("budget", [kalle, helenesRealThing])
+  let kallesRealThing = {
+    user: kallesUserName,
+    budget: {
+        '2023-11': getStandardBudget(),
+        '2024-0': getStandardBudget(),
+        '2024-1': getStandardBudget(),
+        '2024-2': getStandardBudget(),
+        '2024-3': getStandardBudget(),
+        '2024-4': getStandardBudget(),
+        '2024-5': getStandardBudget(),
+        '2024-6': getStandardBudget(),
+        '2024-7': getStandardBudget(),
+        '2024-8': getStandardBudget(),
+        '2024-9': getStandardBudget(),
+        '2024-10': getStandardBudget(),
+        '2024-11': getStandardBudget(),
+      }
+  };
+
+	db.set("budget", [kallesRealThing, helenesRealThing])
 })
 
 */
+
 // Serve static files from the 'www' folder
 app.use(express.static(path.join(__dirname, "www")));
 
@@ -155,15 +177,37 @@ app.get("/api/budget", async (req, res) => {
   }
   console.log(budgetsForUser);
   var budgetForPeriod = budgetsForUser.budget[period];
+  console.log("What I got");
+  console.log(budgetForPeriod);
   res.status(200).json(budgetForPeriod);
 });
 
 app.post("/api/post/budget", (req, res) => {
+  var params = req.query;
+  const userId = params.id;
+  const salaryPeriod = params.period;
+
+  if (!userId || !salaryPeriod) {
+    res.status(500).json({
+      success: false,
+      message: "No user id or salary period provided",
+      data: null,
+    });
+  }
+  
   try {
     // Process the data here (e.g., save to database)
     db.get("budget").then((value) => {
       var oldBudget = value.value;
-      oldBudget[_salaryPeriod] = req.body;
+      var budgetForUser = oldBudget.find((budget) => budget.user == userId);
+      if (!budgetForUser) {
+        res.status(404).json({
+          success: false,
+          message: "No user id or salary period provided",
+          data: null,
+        })
+      }
+      budgetForUser["budget"][salaryPeriod] = req.body;
       db.set("budget", oldBudget).then(() => {});
     });
 
@@ -278,7 +322,7 @@ function filterExpensesBySalaryPeriod(expenses, period) {
 }
 
 function filterSavings(expenses, include) {
-  include = { true: true, false: false }.include ?? false;
+  include = { true: true, false: false }[include] ?? false;
   if (include) return expenses;
   return expenses.filter((expense) => {
     return !expense.isSavings;
@@ -286,7 +330,7 @@ function filterSavings(expenses, include) {
 }
 
 function filterFixed(expenses, include) {
-  include = { true: true, false: false }.include ?? false;
+  include = { true: true, false: false }[include] ?? false;
   if (include) return expenses;
   return expenses.filter((expense) => {
     return (

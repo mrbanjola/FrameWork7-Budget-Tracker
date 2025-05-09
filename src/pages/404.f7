@@ -17,11 +17,34 @@
       <p>Sorry</p>
       <p>Requested content not found.</p>
     </div>
+    <div class="list">
+        <ul>
+            ${Object.keys($store.state).map(a => {
+            return $h`
+            <li>
+    <div class="item-content">
+        <div class="item-media">
+            <i class="icon material-icons if-md icon-${$store.state[a] ? "green" : "red"}">${$store.state[a] ? "check_circle" : "error"}</i>
+        </div>
+        <div class="item-inner">
+            <div class="item-title">
+                ${`${a}`}
+            </div>
+            <div class="item-after">
+                 ${typeof($store.state[a])}
+            </div>
+        </div>
+    </div>
+</li>`
+            })
+          }
+        </ul>
+    </div>
   </div>
 </div>
 </template>
 <script>
-export default () => {
+export default ({$store,$}) => {
   return $render;
 };
 </script>

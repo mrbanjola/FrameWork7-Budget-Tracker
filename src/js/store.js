@@ -4,10 +4,8 @@ import Gradient from "javascript-color-gradient";
 
 const store = createStore({
   state: {
-    allExpenses: [],
     expenses: [], // Global variable to store expenses,
     budget: {}, // Global variable to store budget,
-    categorizedExpenses: {}, // Global variable to store categorized expenses
     activeExpense: null, // Global variable to store active expense
     includeFixed: false, // Global variable to store whether to include fixed expenses
     includeSavings: false, // Global variable to store whether to include savings
@@ -23,8 +21,6 @@ const store = createStore({
         }
         if (!state.activeUser || !state.activeUser.APIurl) {
           state.expenses = [];
-          state.allExpenses = [];
-          state.categorizedExpenses = {};
           reject("No active user");
           return;
         }
@@ -36,7 +32,6 @@ const store = createStore({
           ).then((response) => {
             if (!response.ok) {
               state.expenses = [];
-              state.categorizedExpenses = {};
               reject({
                 message: `This is a message from inside fetchExpenses. Response was bad, in fact it was not ok. Status is supposedly ${response.status}`,
               });
@@ -44,8 +39,7 @@ const store = createStore({
               response.json().then((data) => {
                 console.log(data);
                 state.expenses = data; // Save to global state
-                state.allExpenses = data; // Save to global state
-                state.categorizedExpenses = GroupExpensesByCategory(data);
+                state.salaryPeriod = data[data.length - 1].salaryPeriod; // Save to global state
                 resolve("Allgood");
               });
             }
@@ -58,10 +52,13 @@ const store = createStore({
     },
     setExpenses({ state }, expenses) {
       state.expenses = expenses;
-      state.categorizedExpenses = [...GroupExpensesByCategory(expenses)];
     },
     setSalaryPeriod({ state }, salaryPeriod) {
       state.salaryPeriod = salaryPeriod;
+    },
+    toggleIncludeFixed({ state }) {
+      console.log("Boii, am i toggling fixed? Yes. I am.")
+      state.includeFixed = !state.includeFixed;
     },
     fetchFullYearExpenses({ state }) {
       return new Promise(async (resolve, reject) => {
@@ -106,13 +103,14 @@ const store = createStore({
         }
         try {
           const response = await fetch(
-            `/api/budget?id=${state.activeUser.userId}`,
+            `/api/budget?id=${state.activeUser.userId}&period=${state.salaryPeriod}`,
           ); // Replace with your API endpoint
           if (!response.ok) {
             reject("Failed to fetch budget:");
           } else {
-            console.log(response);
+            console.log("I found the buddddzzzzt")
             const data = await response.json();
+            console.log(data);
             state.budget = data; // Save to global state
             resolve();
           }
@@ -256,6 +254,12 @@ const store = createStore({
       return new Gradient()
       .setColorGradient("#3F2CAF", "#e9446a")
       .getColor(value);
+    },
+    getFilterSettings({ state }) {
+      return {
+        includeFixed: state.includeFixed,
+        includeSavings: state.includeSavings,
+      };
     }
   },
 });

@@ -8,11 +8,13 @@
     </div>
     <div class="page-content">
       <div class="block-title">Inline with custom toolbar</div>
+      <div class="card">
       <div class="block block-strong no-padding">
         <div id="demo-calendar-inline-container"></div>
       </div>
+      </div>
       <div class="searchbar-backdrop"></div>
-      <form class="searchbar">
+      <form class="searchbar searchbar-init" data-search-container=".card-container" data-search-in=".item-title">
         <div class="searchbar-inner">
           <div class="searchbar-input-wrap">
             <input type="search" placeholder="${expenses.value.length > 0 ? "Sök" : "Inga transaktioner här inte"}" />
@@ -22,7 +24,8 @@
           <span class="searchbar-disable-button">Cancel</span>
         </div>
       </form>
-      ${(expenses.value.length > 0) ? Object.keys(GroupExpensesByCategory(FilterExpenses(expenses.value, false, false))).map((expense) => {
+      <div class="card-container">
+      ${(expenses.value.length > 0) ? Object.keys(GroupExpensesByCategory(FilterExpenses(expenses.value, filterSettings.value.includeFixed, filterSettings.value.includeSavings))).map((expense) => {
       if (!activeUser.value) {
       return "";
       }
@@ -32,7 +35,7 @@
         <div class="card-content">
           <div class="list list-dividers">
             <ul>
-              ${GroupExpensesByCategory(FilterExpenses(expenses.value,false,false))[expense]?.map((exp) => {
+              ${GroupExpensesByCategory(FilterExpenses(expenses.value,filterSettings.value.includeFixed,filterSettings.value.includeSavings))[expense]?.map((exp) => {
               if (!activeUser.value) {
               return "";
               }
@@ -65,7 +68,7 @@
                   Totalt
                 </div>
                 <div class="item-after">
-                  ${activeUser.value != null ? Math.round(GroupExpensesByCategory(FilterExpenses(expenses.value,false,false))[expense]?.reduce((sum,expense) => {
+                  ${activeUser.value != null ? Math.round(GroupExpensesByCategory(FilterExpenses(expenses.value,filterSettings.value.includeFixed,filterSettings.value.includeSavings))[expense]?.reduce((sum,expense) => {
                   return sum + expense.sum;
                   },0)) : ""}
                 </div>
@@ -81,6 +84,7 @@
     }
     ) : ""
     }
+    </div>
 
     <!-- START POPOVER EXPENSE -->
     <div class="popover popover-menu">
@@ -158,15 +162,13 @@ export default async (props,{$store,$,$on,$f7,$update}) => {
     var expenses = $store.getters.getExpenses;
     var allExpenses = $store.getters.getFullYearExpenses;
     var activeExpense = $store.getters.getActiveExpense;
+    var filterSettings = $store.getters.getFilterSettings;
     const activeUser = $store.getters.getActiveUser;
 
 
-    var includeFixed = true;
-    var includeSavings = true;
-
     const getColor = (value) => {
     return new Gradient()
-    .setColorGradient("#8acbec", "#f2062f")
+    .setColorGradient("#8acbec", "#f5e569", "#f2062f")
     .setMidpoint(20)
     .getColor(value);
     }
@@ -205,6 +207,8 @@ export default async (props,{$store,$,$on,$f7,$update}) => {
     
 
     $on("pageInit",async () => {
+
+    console.log($store.state)
 
       let attempts = 0;
       let maxAttempts = 150000;
@@ -272,12 +276,7 @@ export default async (props,{$store,$,$on,$f7,$update}) => {
     });
 
     const filterExpenses = () => {
-      includeFixed = !includeFixed;
-      includeSavings = !includeSavings;
-      $store.dispatch("filterExpenses", {
-        includeFixed,
-        includeSavings
-      });
+      $store.dispatch("toggleIncludeFixed");
     }
 
 
